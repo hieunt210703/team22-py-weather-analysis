@@ -1,0 +1,15 @@
+{
+    "typeCheckingMode": "strict",
+    "reportUnusedImport": "none",
+    "reportUnusedVariable": "none",
+    "reportDuplicateImport": "none",
+    "reportAssertAlwaysTrue": "none",
+    "reportInvalidStringEscapeSequence": "none",
+    "reportUnsupportedDunderAll": "none",
+    "reportMissingImports": "error",
+    "reportImplicitRelativeImport": "error",
+    // "executionEnvironments": [
+    //     { 
+    //     }
+    // ]
+}

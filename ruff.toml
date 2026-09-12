@@ -1,0 +1,11 @@
+[lint]
+
+select = ["E4", "E7", "E9", "F"]
+
+
+ignore = [
+    "F821",    # undefined-name
+    "F823",    # undefined-local
+    "RUF013",  # implicit-optional
+    "F401",    # unused-import
+]

@@ -1,0 +1,15 @@
+{
+  "editor.insertSpaces": true,
+  "[python]": {
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false
+  },
+  "[markdown]": {
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false
+  },
+  "files.exclude": {
+    "**/__pycache__": true,
+    ".ruff_cache": true
+  },
+}
