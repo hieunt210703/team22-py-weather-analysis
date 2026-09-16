@@ -1,8 +1,2 @@
+# Cấu hình cục bộ dùng chung
 *.local.*
-.venv/
-__pycache__/
-.pytest_cache/
-.ruff_cache/
-backend/data/*.db
-node_modules/
-dist/

@@ -1,0 +1,10 @@
+# Môi trường Python
+.venv/
+
+# Cache của Python và công cụ kiểm tra
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+
+# Cơ sở dữ liệu tạo khi chạy ứng dụng
+data/*.db

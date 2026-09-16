@@ -22,7 +22,9 @@
     "editor.detectIndentation": false
   },
   "files.exclude": {
-    "**/__pycache__": true,
-    ".ruff_cache": true
+    "backend/__pycache__": true,
+    "backend/.pytest_cache": true,
+    "backend/.ruff_cache": true,
+    "backend/.venv": true,
   },
 }

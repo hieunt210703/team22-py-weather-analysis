@@ -1,0 +1,5 @@
+# Dependency được cài cục bộ
+node_modules/
+
+# Kết quả build
+dist/
