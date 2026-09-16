@@ -2,26 +2,52 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Chạy ứng dụng",
+      "label": "Chạy backend",
       "type": "shell",
-      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
-      "args": ["-m", "streamlit", "run", "app.py"],
+      "command": "${workspaceFolder}\\backend\\.venv\\Scripts\\python.exe",
+      "args": ["-m", "uvicorn", "weather_analysis.api.app:app", "--reload"],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
       "problemMatcher": [],
       "isBackground": true
     },
     {
-      "label": "Chạy unit test",
+      "label": "Chạy frontend",
       "type": "shell",
-      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
-      "args": ["-m", "pytest", "tests/unit", "-q"],
+      "command": "npm",
+      "args": ["run", "dev"],
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Chạy ứng dụng",
+      "dependsOn": ["Chạy backend", "Chạy frontend"],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "Chạy test backend",
+      "type": "shell",
+      "command": "${workspaceFolder}\\backend\\.venv\\Scripts\\python.exe",
+      "args": ["-m", "pytest", "-q"],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
       "group": "test",
       "problemMatcher": []
     },
     {
-      "label": "Chạy UI test",
+      "label": "Chạy test frontend",
       "type": "shell",
-      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
-      "args": ["-m", "pytest", "tests/ui", "-q"],
+      "command": "npm",
+      "args": ["test"],
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
       "group": "test",
       "problemMatcher": []
     }

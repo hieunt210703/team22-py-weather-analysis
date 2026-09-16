@@ -2,11 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug ứng dụng thời tiết",
+      "name": "Debug backend",
       "type": "debugpy",
       "request": "launch",
-      "module": "streamlit",
-      "args": ["run", "${workspaceFolder}/app.py"],
+      "python": "${workspaceFolder}/backend/.venv/Scripts/python.exe",
+      "module": "uvicorn",
+      "args": ["weather_analysis.api.app:app", "--port", "8000"],
+      "cwd": "${workspaceFolder}/backend",
       "console": "integratedTerminal"
     }
   ]

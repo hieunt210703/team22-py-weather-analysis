@@ -2,15 +2,19 @@
   "language": "en,vi",
   "words": [
     "bcrypt",
-    "headless",
+    "fastapi",
+    "httpx",
+    "itsdangerous",
     "localhost",
-    "playwright",
+    "pydantic",
     "pytest",
     "pyright",
+    "recharts",
     "sqlite",
-    "stcore",
-    "streamlit",
-    "vegalite",
-    "venv"
+    "tsx",
+    "uvicorn",
+    "venv",
+    "vite",
+    "vitest"
   ]
 }

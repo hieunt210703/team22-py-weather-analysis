@@ -8,8 +8,12 @@
     "reportUnsupportedDunderAll": "none",
     "reportMissingImports": "error",
     "reportImplicitRelativeImport": "error",
-    // "executionEnvironments": [
-    //     { 
-    //     }
-    // ]
+    "include": ["backend"],
+    "venvPath": "backend",
+    "venv": ".venv",
+    "executionEnvironments": [
+        {
+            "root": "backend"
+        }
+    ]
 }

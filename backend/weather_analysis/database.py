@@ -10,7 +10,7 @@ def connect(database_path: Path | None = None) -> sqlite3.Connection:
     """Mở kết nối SQLite đã bật ràng buộc khóa ngoại."""
     path = database_path or get_database_path()
     path.parent.mkdir(parents=True, exist_ok=True)
-    connection = sqlite3.connect(path)
+    connection = sqlite3.connect(path, check_same_thread=False)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
     return connection
