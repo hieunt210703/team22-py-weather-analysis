@@ -1,15 +1,13 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python Debugger: Current Main",
+      "name": "Debug ứng dụng thời tiết",
       "type": "debugpy",
       "request": "launch",
-      "program": "${fileDirname}/main.py",
-      "console": "externalTerminal",
+      "module": "streamlit",
+      "args": ["run", "${workspaceFolder}/app.py"],
+      "console": "integratedTerminal"
     }
   ]
 }

@@ -1,0 +1,6 @@
+-r requirements.txt
+pytest==9.1.0
+pytest-playwright==0.7.2
+playwright==1.62.0
+pyright==1.1.405
+ruff==0.13.2

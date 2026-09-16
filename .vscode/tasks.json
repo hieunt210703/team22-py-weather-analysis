@@ -1,4 +1,29 @@
 {
   "version": "2.0.0",
-  "tasks": []
+  "tasks": [
+    {
+      "label": "Chạy ứng dụng",
+      "type": "shell",
+      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "args": ["-m", "streamlit", "run", "app.py"],
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Chạy unit test",
+      "type": "shell",
+      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "args": ["-m", "pytest", "tests/unit", "-q"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Chạy UI test",
+      "type": "shell",
+      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "args": ["-m", "pytest", "tests/ui", "-q"],
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
 }

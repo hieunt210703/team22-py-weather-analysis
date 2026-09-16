@@ -1,4 +1,16 @@
 {
   "language": "en,vi",
-  "words": []
+  "words": [
+    "bcrypt",
+    "headless",
+    "localhost",
+    "playwright",
+    "pytest",
+    "pyright",
+    "sqlite",
+    "stcore",
+    "streamlit",
+    "vegalite",
+    "venv"
+  ]
 }
