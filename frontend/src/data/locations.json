@@ -1,0 +1,844 @@
+{
+  "count": 91,
+  "note": "lat/lon chưa có trong bản mock. Resolve một lần qua https://geocoding-api.open-meteo.com/v1/search?name=<name>&country=VN rồi commit lại file này. slug dùng cho URL.",
+  "pinned": [
+    "Hồ Chí Minh",
+    "Hà Nội",
+    "Đà Nẵng",
+    "Đà Lạt",
+    "Nha Trang",
+    "Huế"
+  ],
+  "regions": {
+    "taybac": "Tây Bắc",
+    "dongbac": "Đông Bắc",
+    "dbbb": "Đồng bằng Bắc Bộ",
+    "bactrung": "Bắc Trung Bộ",
+    "trungtrung": "Trung Trung Bộ",
+    "namtrung": "Nam Trung Bộ",
+    "taynguyen": "Tây Nguyên",
+    "dongnam": "Đông Nam Bộ",
+    "taynam": "Tây Nam Bộ"
+  },
+  "locations": [
+    {
+      "name": "Hà Nội",
+      "slug": "ha-noi",
+      "region": "dbbb",
+      "regionLabel": "Đồng bằng Bắc Bộ",
+      "tempOffset": 0,
+      "lat": 21.0285,
+      "lon": 105.8542
+    },
+    {
+      "name": "Hải Phòng",
+      "slug": "hai-phong",
+      "region": "dbbb",
+      "regionLabel": "Đồng bằng Bắc Bộ",
+      "tempOffset": 0,
+      "lat": 20.8449,
+      "lon": 106.6881
+    },
+    {
+      "name": "Bắc Ninh",
+      "slug": "bac-ninh",
+      "region": "dbbb",
+      "regionLabel": "Đồng bằng Bắc Bộ",
+      "tempOffset": 0,
+      "lat": 21.1861,
+      "lon": 106.0763
+    },
+    {
+      "name": "Hải Dương",
+      "slug": "hai-duong",
+      "region": "dbbb",
+      "regionLabel": "Đồng bằng Bắc Bộ",
+      "tempOffset": 0,
+      "lat": 20.941,
+      "lon": 106.333
+    },
+    {
+      "name": "Hưng Yên",
+      "slug": "hung-yen",
+      "region": "dbbb",
+      "regionLabel": "Đồng bằng Bắc Bộ",
+      "tempOffset": 0,
+      "lat": 20.6464,
+      "lon": 106.0511
+    },
+    {
+      "name": "Thái Bình",
+      "slug": "thai-binh",
+      "region": "dbbb",
+      "regionLabel": "Đồng bằng Bắc Bộ",
+      "tempOffset": 0,
+      "lat": 20.45,
+      "lon": 106.34
+    },
+    {
+      "name": "Hà Nam",
+      "slug": "ha-nam",
+      "region": "dbbb",
+      "regionLabel": "Đồng bằng Bắc Bộ",
+      "tempOffset": 0,
+      "lat": 20.5413,
+      "lon": 105.9139
+    },
+    {
+      "name": "Nam Định",
+      "slug": "nam-dinh",
+      "region": "dbbb",
+      "regionLabel": "Đồng bằng Bắc Bộ",
+      "tempOffset": 0,
+      "lat": 20.4339,
+      "lon": 106.1773
+    },
+    {
+      "name": "Ninh Bình",
+      "slug": "ninh-binh",
+      "region": "dbbb",
+      "regionLabel": "Đồng bằng Bắc Bộ",
+      "tempOffset": 0,
+      "lat": 20.2581,
+      "lon": 105.9797
+    },
+    {
+      "name": "Vĩnh Phúc",
+      "slug": "vinh-phuc",
+      "region": "dbbb",
+      "regionLabel": "Đồng bằng Bắc Bộ",
+      "tempOffset": 0,
+      "lat": 21.3089,
+      "lon": 105.6049
+    },
+    {
+      "name": "Hà Đông",
+      "slug": "ha-dong",
+      "region": "dbbb",
+      "regionLabel": "Đồng bằng Bắc Bộ",
+      "tempOffset": 0,
+      "lat": 20.9714,
+      "lon": 105.7788
+    },
+    {
+      "name": "Quảng Ninh",
+      "slug": "quang-ninh",
+      "region": "dongbac",
+      "regionLabel": "Đông Bắc",
+      "tempOffset": 0,
+      "lat": 20.9505,
+      "lon": 107.0734
+    },
+    {
+      "name": "Bắc Giang",
+      "slug": "bac-giang",
+      "region": "dongbac",
+      "regionLabel": "Đông Bắc",
+      "tempOffset": 0,
+      "lat": 21.2731,
+      "lon": 106.1946
+    },
+    {
+      "name": "Thái Nguyên",
+      "slug": "thai-nguyen",
+      "region": "dongbac",
+      "regionLabel": "Đông Bắc",
+      "tempOffset": 0,
+      "lat": 21.5928,
+      "lon": 105.8442
+    },
+    {
+      "name": "Tuyên Quang",
+      "slug": "tuyen-quang",
+      "region": "dongbac",
+      "regionLabel": "Đông Bắc",
+      "tempOffset": 0,
+      "lat": 21.8236,
+      "lon": 105.2142
+    },
+    {
+      "name": "Cao Bằng",
+      "slug": "cao-bang",
+      "region": "dongbac",
+      "regionLabel": "Đông Bắc",
+      "tempOffset": 0,
+      "lat": 22.6657,
+      "lon": 106.2579
+    },
+    {
+      "name": "Bắc Kạn",
+      "slug": "bac-kan",
+      "region": "dongbac",
+      "regionLabel": "Đông Bắc",
+      "tempOffset": 0,
+      "lat": 22.147,
+      "lon": 105.8348
+    },
+    {
+      "name": "Lạng Sơn",
+      "slug": "lang-son",
+      "region": "dongbac",
+      "regionLabel": "Đông Bắc",
+      "tempOffset": 0,
+      "lat": 21.8526,
+      "lon": 106.761
+    },
+    {
+      "name": "Phú Thọ",
+      "slug": "phu-tho",
+      "region": "dongbac",
+      "regionLabel": "Đông Bắc",
+      "tempOffset": 0,
+      "lat": 21.3996,
+      "lon": 105.2222
+    },
+    {
+      "name": "Yên Bái",
+      "slug": "yen-bai",
+      "region": "dongbac",
+      "regionLabel": "Đông Bắc",
+      "tempOffset": 0,
+      "lat": 21.7229,
+      "lon": 104.9113
+    },
+    {
+      "name": "Hà Giang",
+      "slug": "ha-giang",
+      "region": "dongbac",
+      "regionLabel": "Đông Bắc",
+      "tempOffset": 0,
+      "lat": 22.8233,
+      "lon": 104.9836
+    },
+    {
+      "name": "Sơn La",
+      "slug": "son-la",
+      "region": "taybac",
+      "regionLabel": "Tây Bắc",
+      "tempOffset": 0,
+      "lat": 21.3256,
+      "lon": 103.9188
+    },
+    {
+      "name": "Điện Biên",
+      "slug": "dien-bien",
+      "region": "taybac",
+      "regionLabel": "Tây Bắc",
+      "tempOffset": 0,
+      "lat": 21.386,
+      "lon": 103.023
+    },
+    {
+      "name": "Lai Châu",
+      "slug": "lai-chau",
+      "region": "taybac",
+      "regionLabel": "Tây Bắc",
+      "tempOffset": 0,
+      "lat": 22.3964,
+      "lon": 103.4582
+    },
+    {
+      "name": "Lào Cai",
+      "slug": "lao-cai",
+      "region": "taybac",
+      "regionLabel": "Tây Bắc",
+      "tempOffset": 0,
+      "lat": 22.4856,
+      "lon": 103.9707
+    },
+    {
+      "name": "Hoà Bình",
+      "slug": "hoa-binh",
+      "region": "taybac",
+      "regionLabel": "Tây Bắc",
+      "tempOffset": 0,
+      "lat": 20.8172,
+      "lon": 105.3376
+    },
+    {
+      "name": "Sa Pa",
+      "slug": "sa-pa",
+      "region": "taybac",
+      "regionLabel": "Tây Bắc",
+      "tempOffset": -3,
+      "lat": 22.3364,
+      "lon": 103.8438
+    },
+    {
+      "name": "Mộc Châu",
+      "slug": "moc-chau",
+      "region": "taybac",
+      "regionLabel": "Tây Bắc",
+      "tempOffset": -3,
+      "lat": 20.8436,
+      "lon": 104.6344
+    },
+    {
+      "name": "Tam Đảo",
+      "slug": "tam-dao",
+      "region": "taybac",
+      "regionLabel": "Tây Bắc",
+      "tempOffset": -3,
+      "lat": 21.4583,
+      "lon": 105.6472
+    },
+    {
+      "name": "Thanh Hoá",
+      "slug": "thanh-hoa",
+      "region": "bactrung",
+      "regionLabel": "Bắc Trung Bộ",
+      "tempOffset": 0,
+      "lat": 19.8,
+      "lon": 105.7667
+    },
+    {
+      "name": "Nghệ An",
+      "slug": "nghe-an",
+      "region": "bactrung",
+      "regionLabel": "Bắc Trung Bộ",
+      "tempOffset": 0,
+      "lat": 18.6734,
+      "lon": 105.6923
+    },
+    {
+      "name": "Hà Tĩnh",
+      "slug": "ha-tinh",
+      "region": "bactrung",
+      "regionLabel": "Bắc Trung Bộ",
+      "tempOffset": 0,
+      "lat": 18.3428,
+      "lon": 105.9057
+    },
+    {
+      "name": "Quảng Bình",
+      "slug": "quang-binh",
+      "region": "bactrung",
+      "regionLabel": "Bắc Trung Bộ",
+      "tempOffset": 0,
+      "lat": 17.4689,
+      "lon": 106.6223
+    },
+    {
+      "name": "Quảng Trị",
+      "slug": "quang-tri",
+      "region": "bactrung",
+      "regionLabel": "Bắc Trung Bộ",
+      "tempOffset": 0,
+      "lat": 16.7508,
+      "lon": 107.1828
+    },
+    {
+      "name": "Huế",
+      "slug": "hue",
+      "region": "bactrung",
+      "regionLabel": "Bắc Trung Bộ",
+      "tempOffset": 0,
+      "lat": 16.4637,
+      "lon": 107.5909
+    },
+    {
+      "name": "Vinh",
+      "slug": "vinh",
+      "region": "bactrung",
+      "regionLabel": "Bắc Trung Bộ",
+      "tempOffset": 0,
+      "lat": 18.6734,
+      "lon": 105.6923
+    },
+    {
+      "name": "Đồng Hới",
+      "slug": "dong-hoi",
+      "region": "bactrung",
+      "regionLabel": "Bắc Trung Bộ",
+      "tempOffset": 0,
+      "lat": 17.4689,
+      "lon": 106.6223
+    },
+    {
+      "name": "Đà Nẵng",
+      "slug": "da-nang",
+      "region": "trungtrung",
+      "regionLabel": "Trung Trung Bộ",
+      "tempOffset": 0,
+      "lat": 16.0544,
+      "lon": 108.2022
+    },
+    {
+      "name": "Quảng Nam",
+      "slug": "quang-nam",
+      "region": "trungtrung",
+      "regionLabel": "Trung Trung Bộ",
+      "tempOffset": 0,
+      "lat": 15.5736,
+      "lon": 108.474
+    },
+    {
+      "name": "Hội An",
+      "slug": "hoi-an",
+      "region": "trungtrung",
+      "regionLabel": "Trung Trung Bộ",
+      "tempOffset": 0,
+      "lat": 15.8801,
+      "lon": 108.338
+    },
+    {
+      "name": "Quảng Ngãi",
+      "slug": "quang-ngai",
+      "region": "trungtrung",
+      "regionLabel": "Trung Trung Bộ",
+      "tempOffset": 0,
+      "lat": 15.1205,
+      "lon": 108.7923
+    },
+    {
+      "name": "Tam Kỳ",
+      "slug": "tam-ky",
+      "region": "trungtrung",
+      "regionLabel": "Trung Trung Bộ",
+      "tempOffset": 0,
+      "lat": 15.5736,
+      "lon": 108.474
+    },
+    {
+      "name": "Nha Trang",
+      "slug": "nha-trang",
+      "region": "namtrung",
+      "regionLabel": "Nam Trung Bộ",
+      "tempOffset": 0,
+      "lat": 12.2388,
+      "lon": 109.1967
+    },
+    {
+      "name": "Bình Định",
+      "slug": "binh-dinh",
+      "region": "namtrung",
+      "regionLabel": "Nam Trung Bộ",
+      "tempOffset": 0,
+      "lat": 13.7765,
+      "lon": 109.2237
+    },
+    {
+      "name": "Quy Nhơn",
+      "slug": "quy-nhon",
+      "region": "namtrung",
+      "regionLabel": "Nam Trung Bộ",
+      "tempOffset": 0,
+      "lat": 13.7765,
+      "lon": 109.2237
+    },
+    {
+      "name": "Phú Yên",
+      "slug": "phu-yen",
+      "region": "namtrung",
+      "regionLabel": "Nam Trung Bộ",
+      "tempOffset": 0,
+      "lat": 13.0882,
+      "lon": 109.3134
+    },
+    {
+      "name": "Tuy Hoà",
+      "slug": "tuy-hoa",
+      "region": "namtrung",
+      "regionLabel": "Nam Trung Bộ",
+      "tempOffset": 0,
+      "lat": 13.0882,
+      "lon": 109.3134
+    },
+    {
+      "name": "Khánh Hoà",
+      "slug": "khanh-hoa",
+      "region": "namtrung",
+      "regionLabel": "Nam Trung Bộ",
+      "tempOffset": 0,
+      "lat": 12.2388,
+      "lon": 109.1967
+    },
+    {
+      "name": "Ninh Thuận",
+      "slug": "ninh-thuan",
+      "region": "namtrung",
+      "regionLabel": "Nam Trung Bộ",
+      "tempOffset": 0,
+      "lat": 11.5643,
+      "lon": 108.9886
+    },
+    {
+      "name": "Phan Rang",
+      "slug": "phan-rang",
+      "region": "namtrung",
+      "regionLabel": "Nam Trung Bộ",
+      "tempOffset": 0,
+      "lat": 11.5643,
+      "lon": 108.9886
+    },
+    {
+      "name": "Bình Thuận",
+      "slug": "binh-thuan",
+      "region": "namtrung",
+      "regionLabel": "Nam Trung Bộ",
+      "tempOffset": 0,
+      "lat": 10.9289,
+      "lon": 108.1021
+    },
+    {
+      "name": "Phan Thiết",
+      "slug": "phan-thiet",
+      "region": "namtrung",
+      "regionLabel": "Nam Trung Bộ",
+      "tempOffset": 0,
+      "lat": 10.9289,
+      "lon": 108.1021
+    },
+    {
+      "name": "Cam Ranh",
+      "slug": "cam-ranh",
+      "region": "namtrung",
+      "regionLabel": "Nam Trung Bộ",
+      "tempOffset": 0,
+      "lat": 11.9214,
+      "lon": 109.1591
+    },
+    {
+      "name": "Đà Lạt",
+      "slug": "da-lat",
+      "region": "taynguyen",
+      "regionLabel": "Tây Nguyên",
+      "tempOffset": 0,
+      "lat": 11.9404,
+      "lon": 108.4583
+    },
+    {
+      "name": "Lâm Đồng",
+      "slug": "lam-dong",
+      "region": "taynguyen",
+      "regionLabel": "Tây Nguyên",
+      "tempOffset": 0,
+      "lat": 11.9404,
+      "lon": 108.4583
+    },
+    {
+      "name": "Đắk Lắk",
+      "slug": "dak-lak",
+      "region": "taynguyen",
+      "regionLabel": "Tây Nguyên",
+      "tempOffset": 0,
+      "lat": 12.6675,
+      "lon": 108.0378
+    },
+    {
+      "name": "Buôn Ma Thuột",
+      "slug": "buon-ma-thuot",
+      "region": "taynguyen",
+      "regionLabel": "Tây Nguyên",
+      "tempOffset": 0,
+      "lat": 12.6675,
+      "lon": 108.0378
+    },
+    {
+      "name": "Gia Lai",
+      "slug": "gia-lai",
+      "region": "taynguyen",
+      "regionLabel": "Tây Nguyên",
+      "tempOffset": 0,
+      "lat": 13.9833,
+      "lon": 108
+    },
+    {
+      "name": "Pleiku",
+      "slug": "pleiku",
+      "region": "taynguyen",
+      "regionLabel": "Tây Nguyên",
+      "tempOffset": 0,
+      "lat": 13.9833,
+      "lon": 108
+    },
+    {
+      "name": "Kon Tum",
+      "slug": "kon-tum",
+      "region": "taynguyen",
+      "regionLabel": "Tây Nguyên",
+      "tempOffset": 0,
+      "lat": 14.3545,
+      "lon": 108.0076
+    },
+    {
+      "name": "Đắk Nông",
+      "slug": "dak-nong",
+      "region": "taynguyen",
+      "regionLabel": "Tây Nguyên",
+      "tempOffset": 0,
+      "lat": 12.0042,
+      "lon": 107.6907
+    },
+    {
+      "name": "Gia Nghĩa",
+      "slug": "gia-nghia",
+      "region": "taynguyen",
+      "regionLabel": "Tây Nguyên",
+      "tempOffset": 0,
+      "lat": 12.0042,
+      "lon": 107.6907
+    },
+    {
+      "name": "Bảo Lộc",
+      "slug": "bao-loc",
+      "region": "taynguyen",
+      "regionLabel": "Tây Nguyên",
+      "tempOffset": 0,
+      "lat": 11.548,
+      "lon": 107.8077
+    },
+    {
+      "name": "Hồ Chí Minh",
+      "slug": "ho-chi-minh",
+      "region": "dongnam",
+      "regionLabel": "Đông Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.823,
+      "lon": 106.6296
+    },
+    {
+      "name": "Bình Dương",
+      "slug": "binh-duong",
+      "region": "dongnam",
+      "regionLabel": "Đông Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.9805,
+      "lon": 106.6519
+    },
+    {
+      "name": "Đồng Nai",
+      "slug": "dong-nai",
+      "region": "dongnam",
+      "regionLabel": "Đông Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.9447,
+      "lon": 106.8243
+    },
+    {
+      "name": "Biên Hoà",
+      "slug": "bien-hoa",
+      "region": "dongnam",
+      "regionLabel": "Đông Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.9447,
+      "lon": 106.8243
+    },
+    {
+      "name": "Bà Rịa Vũng Tàu",
+      "slug": "ba-ria-vung-tau",
+      "region": "dongnam",
+      "regionLabel": "Đông Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.4114,
+      "lon": 107.1362
+    },
+    {
+      "name": "Vũng Tàu",
+      "slug": "vung-tau",
+      "region": "dongnam",
+      "regionLabel": "Đông Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.346,
+      "lon": 107.0843
+    },
+    {
+      "name": "Tây Ninh",
+      "slug": "tay-ninh",
+      "region": "dongnam",
+      "regionLabel": "Đông Nam Bộ",
+      "tempOffset": 0,
+      "lat": 11.3103,
+      "lon": 106.0983
+    },
+    {
+      "name": "Bình Phước",
+      "slug": "binh-phuoc",
+      "region": "dongnam",
+      "regionLabel": "Đông Nam Bộ",
+      "tempOffset": 0,
+      "lat": 11.7511,
+      "lon": 106.9189
+    },
+    {
+      "name": "Thủ Đức",
+      "slug": "thu-duc",
+      "region": "dongnam",
+      "regionLabel": "Đông Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.8494,
+      "lon": 106.7537
+    },
+    {
+      "name": "Củ Chi",
+      "slug": "cu-chi",
+      "region": "dongnam",
+      "regionLabel": "Đông Nam Bộ",
+      "tempOffset": 0,
+      "lat": 11.0067,
+      "lon": 106.5132
+    },
+    {
+      "name": "Cần Thơ",
+      "slug": "can-tho",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.0371,
+      "lon": 105.7883
+    },
+    {
+      "name": "An Giang",
+      "slug": "an-giang",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.3864,
+      "lon": 105.4352
+    },
+    {
+      "name": "Long Xuyên",
+      "slug": "long-xuyen",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.3864,
+      "lon": 105.4352
+    },
+    {
+      "name": "Đồng Tháp",
+      "slug": "dong-thap",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.4602,
+      "lon": 105.6329
+    },
+    {
+      "name": "Cao Lãnh",
+      "slug": "cao-lanh",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.4602,
+      "lon": 105.6329
+    },
+    {
+      "name": "Tiền Giang",
+      "slug": "tien-giang",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.36,
+      "lon": 106.36
+    },
+    {
+      "name": "Mỹ Tho",
+      "slug": "my-tho",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.36,
+      "lon": 106.36
+    },
+    {
+      "name": "Bến Tre",
+      "slug": "ben-tre",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.2415,
+      "lon": 106.3759
+    },
+    {
+      "name": "Vĩnh Long",
+      "slug": "vinh-long",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.2537,
+      "lon": 105.9722
+    },
+    {
+      "name": "Trà Vinh",
+      "slug": "tra-vinh",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 9.9472,
+      "lon": 106.3423
+    },
+    {
+      "name": "Sóc Trăng",
+      "slug": "soc-trang",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 9.6,
+      "lon": 105.9719
+    },
+    {
+      "name": "Hậu Giang",
+      "slug": "hau-giang",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 9.7844,
+      "lon": 105.4701
+    },
+    {
+      "name": "Kiên Giang",
+      "slug": "kien-giang",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.0125,
+      "lon": 105.0809
+    },
+    {
+      "name": "Rạch Giá",
+      "slug": "rach-gia",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.0125,
+      "lon": 105.0809
+    },
+    {
+      "name": "Phú Quốc",
+      "slug": "phu-quoc",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.2289,
+      "lon": 103.9572
+    },
+    {
+      "name": "Bạc Liêu",
+      "slug": "bac-lieu",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 9.2941,
+      "lon": 105.7278
+    },
+    {
+      "name": "Cà Mau",
+      "slug": "ca-mau",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 9.1768,
+      "lon": 105.1524
+    },
+    {
+      "name": "Long An",
+      "slug": "long-an",
+      "region": "taynam",
+      "regionLabel": "Tây Nam Bộ",
+      "tempOffset": 0,
+      "lat": 10.5367,
+      "lon": 106.4116
+    }
+  ]
+}

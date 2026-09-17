@@ -1,9 +1,57 @@
+@import "tailwindcss";
+
 :root {
-  color: #172033;
-  background: #f3f6fb;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  --acc: #0B6FA4;  /* Màu chủ đạo. Nền thẻ nhận định, cột điểm >=70, chữ tab đang chọn, số nhấn, chip đang chọn. */
+  --accInk: #F3FAFF;  /* Chữ/icon đặt trên nền acc. */
+  --accSoft: #E1F0FA;  /* Nền pill tab đang chọn, nền dòng địa điểm đang chọn. */
+  --accLine: rgba(243,250,255,.36);  /* Đường kẻ mảnh trên nền acc. */
+  --bg: #F4F8FB;  /* Nền trang. */
+  --card: #FFFFFF;  /* Nền thẻ. */
+  --tint: #EFF5FA;  /* Nền ô số phụ trong thẻ, nền select. */
+  --track: #DFEAF3;  /* Nền rãnh progress bar, đường kẻ chia. */
+  --border: #DEE9F1;  /* Viền 1px input, select, dropdown. */
+  --ink: #0C1A24;  /* Chữ chính. */
+  --ink2: #2C4252;  /* Chữ đoạn văn phụ dài. */
+  --m1: #5C7386;  /* Chữ phụ cấp 1 — nhãn tab chưa chọn, nhãn trục. */
+  --m2: #7A90A2;  /* Chữ phụ cấp 2 — mô tả dưới tiêu đề. */
+  --m3: #8CA1B2;  /* Chữ phụ cấp 3 — nhãn uppercase, tick trục. */
+  --m4: #9DB0BF;  /* Chữ phụ nhạt nhất — đơn vị, placeholder. */
+  --mid: #5AA6CE;  /* Cột điểm 50-69. */
+  --dim: #D5E5F0;  /* Cột điểm <50, và series trung bình nhiều năm. */
+  --night: #E8F1F7;  /* Cột giờ đêm, ngoài giờ tính điểm. */
+  --weak: #B4D0E3;  /* Thanh yếu tố điểm <45. */
+  --sh1: 0 1px 3px rgba(12,50,80,.08);  /* Bóng pill/input. */
+  --sh2: 0 2px 10px rgba(12,50,80,.06);  /* Bóng thẻ. */
+  --sh3: 0 12px 34px rgba(12,50,80,.16);  /* Bóng dropdown nổi. */
+}
+
+@theme {
+  --color-acc: var(--acc);
+  --color-acc-ink: var(--accInk);
+  --color-acc-soft: var(--accSoft);
+  --color-acc-line: var(--accLine);
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-tint: var(--tint);
+  --color-track: var(--track);
+  --color-border: var(--border);
+  --color-ink: var(--ink);
+  --color-ink2: var(--ink2);
+  --color-m1: var(--m1);
+  --color-m2: var(--m2);
+  --color-m3: var(--m3);
+  --color-m4: var(--m4);
+  --color-mid: var(--mid);
+  --color-dim: var(--dim);
+  --color-night: var(--night);
+  --color-weak: var(--weak);
+
+  --shadow-sh1: var(--sh1);
+  --shadow-sh2: var(--sh2);
+  --shadow-sh3: var(--sh3);
+
+  --font-nunito: 'Nunito', sans-serif;
+  --font-sans: 'Nunito Sans', sans-serif;
 }
 
 * {
@@ -11,11 +59,27 @@
 }
 
 body {
+  font-family: 'Nunito Sans', sans-serif;
+  background-color: var(--bg);
+  color: var(--ink);
+  margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  margin: 0;
+  -webkit-font-smoothing: antialiased;
 }
 
+/* Typography pretty wrap for descriptions */
+.pretty-text {
+  text-wrap: pretty;
+}
+
+/* Focus ring standard */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
+}
+
+/* Fallback/Legacy classes for existing pages */
 button,
 input {
   font: inherit;
