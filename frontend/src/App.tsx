@@ -1,43 +1,34 @@
-import { useEffect, useState } from 'react'
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { NangMuaApp } from './NangMuaApp';
 
-import { getCurrentUser } from './api/auth'
-import { DashboardPage } from './pages/DashboardPage'
-import { LoginPage } from './pages/LoginPage'
-import type { User } from './types'
+// Create a query client with 30-minute stale time
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30 * 60 * 1000, // 30 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
-function App() {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+export const App: React.FC = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          {/* Main Weather Analysis App Routes */}
+          <Route path="/" element={<NangMuaApp />} />
+          <Route path="/:locationSlug" element={<NangMuaApp />} />
+          <Route path="/:locationSlug/:page" element={<NangMuaApp />} />
 
-  useEffect(() => {
-    let isActive = true
+          {/* Catch-all fallback */}
+          <Route path="*" element={<Navigate to="/ha-noi/tong-quan" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+};
 
-    void getCurrentUser()
-      .then((currentUser) => {
-        if (isActive) {
-          setUser(currentUser)
-        }
-      })
-      .finally(() => {
-        if (isActive) {
-          setIsLoading(false)
-        }
-      })
-
-    return () => {
-      isActive = false
-    }
-  }, [])
-
-  if (isLoading) {
-    return <main className="centered-page">Đang tải...</main>
-  }
-
-  return user === null ? (
-    <LoginPage onLogin={setUser} />
-  ) : (
-    <DashboardPage user={user} onLogout={() => setUser(null)} />
-  )
-}
-
-export default App
+export default App;
