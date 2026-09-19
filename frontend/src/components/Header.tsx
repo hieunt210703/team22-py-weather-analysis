@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <header className="flex items-center gap-[18px] flex-wrap justify-between">
-      <div className="flex items-center gap-[14px] flex-wrap">
+      <div className="flex items-center gap-[14px] flex-wrap min-w-0 max-w-full">
         {/* Pill Logo */}
         <div className="bg-card rounded-full py-2.25 pr-[18px] pl-[14px] shadow-sh1 flex items-center gap-[8px] select-none">
           <span className="w-[9px] h-[9px] rounded-full bg-acc inline-block" />
@@ -37,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Pill Tabs */}
-        <nav className="bg-card rounded-full p-[5px] shadow-sh1 flex items-center gap-[3px]">
+        <nav className="bg-card rounded-full p-[5px] shadow-sh1 flex items-center gap-[3px] max-w-full overflow-x-auto">
           {TABS.map((tab) => {
             const isActive = currentPage === tab.key;
             return (
@@ -47,8 +47,8 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => onSelectPage(tab.key)}
                 className={`px-[17px] py-[8px] !text-[13.5px] rounded-full transition-all duration-150 select-none cursor-pointer focus-ring ${
                   isActive
-                    ? "bg-[#E1F0FA] text-[#0B6FA4] font-bold"
-                    : "hover:text-ink"
+                    ? "bg-acc-soft text-acc font-semibold"
+                    : "text-m1 hover:text-ink"
                 }`}
               >
                 {tab.label}

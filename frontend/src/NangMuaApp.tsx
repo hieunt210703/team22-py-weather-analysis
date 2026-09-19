@@ -4,7 +4,7 @@ import {
   useNavigate,
   useLocation,
 } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useIsFetching, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Header, type PageTab } from './components/Header';
 import { LocationBar } from './components/LocationBar';
 import { OverviewPage } from './pages/OverviewPage';
@@ -26,6 +26,8 @@ export const NangMuaApp: React.FC = () => {
   const { locationSlug, page } = useParams<{ locationSlug?: string; page?: string }>();
   const navigate = useNavigate();
   const routerLocation = useLocation();
+  const queryClient = useQueryClient();
+  const archiveIsFetching = useIsFetching({ queryKey: ['archive'] });
 
   // Selected location from URL or fallback
   const currentLocation: LocationItem = findLocationBySlug(locationSlug || 'ha-noi');
@@ -40,7 +42,10 @@ export const NangMuaApp: React.FC = () => {
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem(FAVORITES_STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [];
+      const parsed: unknown = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed)
+        ? [...new Set(parsed.filter((slug): slug is string => typeof slug === 'string'))]
+        : [];
     } catch {
       return [];
     }
@@ -48,7 +53,7 @@ export const NangMuaApp: React.FC = () => {
 
   const toggleFavorite = (slug: string) => {
     setFavorites(prev => {
-      const next = prev.includes(slug) ? prev.filter(s => s !== slug) : [...prev, slug];
+      const next = prev.includes(slug) ? prev.filter(s => s !== slug) : [slug, ...prev];
       try {
         localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(next));
       } catch (e) {
@@ -102,27 +107,35 @@ export const NangMuaApp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg text-ink selection:bg-accSoft selection:text-acc">
-      <div className="max-w-[1080px] mx-auto px-[22px] pt-[26px] pb-[80px]">
+    <div className="min-h-screen bg-bg text-ink selection:bg-acc-soft selection:text-acc px-[22px] pt-[26px] pb-[80px]">
+      <div className="max-w-[1080px] mx-auto">
         {/* Common Header */}
         <Header
           currentPage={currentPage}
           onSelectPage={handleSelectPage}
           updatedAt={weatherData?.updatedAt || 'Đang cập nhật...'}
-          isFetching={isFetching}
-          onRefresh={() => refetch()}
+          isFetching={isFetching || archiveIsFetching > 0}
+          onRefresh={() => {
+            void refetch();
+            void queryClient.invalidateQueries({ queryKey: ['archive'] });
+          }}
         />
 
         {/* Common Location Bar */}
         <LocationBar
           currentLocation={currentLocation}
+          currentTemperature={weatherData?.tempNow}
           onSelectLocation={handleSelectLocation}
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
         />
 
         {/* Page Content */}
-        {isLoading && !weatherData ? (
+        {currentPage === 'so-sanh' ? (
+          <main><ComparePage currentLocation={currentLocation} /></main>
+        ) : currentPage === 'lich-su' ? (
+          <main><HistoryPage currentLocation={currentLocation} /></main>
+        ) : isLoading && !weatherData ? (
           <WeatherSkeleton />
         ) : isError && !weatherData ? (
           <ErrorMessage
@@ -134,8 +147,6 @@ export const NangMuaApp: React.FC = () => {
             <main>
               {currentPage === 'tong-quan' && <OverviewPage data={weatherData} />}
               {currentPage === 'khung-gio' && <PlannerPage data={weatherData} />}
-              {currentPage === 'so-sanh' && <ComparePage currentLocation={currentLocation} />}
-              {currentPage === 'lich-su' && <HistoryPage currentLocation={currentLocation} />}
             </main>
           )
         )}

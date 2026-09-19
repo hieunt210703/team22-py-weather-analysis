@@ -8,7 +8,7 @@ interface PlannerPageProps {
 
 export const PlannerPage: React.FC<PlannerPageProps> = ({ data }) => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] gap-[16px] mt-[20px]">
+    <div className="grid grid-cols-1 min-[900px]:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] gap-[16px] mt-[20px]">
       {/* Cột trái: Biểu đồ chi tiết 24 giờ */}
       <div className="bg-card rounded-[24px] p-[28px_30px] shadow-sh2 flex flex-col justify-between">
         <div>

@@ -79,6 +79,15 @@ body {
   outline-offset: 2px;
 }
 
+.location-chip-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.location-chip-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 /* Fallback/Legacy classes for existing pages */
 button,
 input {
