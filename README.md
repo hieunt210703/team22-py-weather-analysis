@@ -46,7 +46,9 @@ cd frontend
 npm run dev
 ```
 
-Mở `http://localhost:5173` và đăng nhập bằng:
+Trang thời tiết ở `http://localhost:5173`.
+
+Trang quản trị ở `http://localhost:5173/admin/dang-nhap`, đăng nhập bằng:
 
 - Tên đăng nhập: `admin`
 - Mật khẩu: `adminpw`

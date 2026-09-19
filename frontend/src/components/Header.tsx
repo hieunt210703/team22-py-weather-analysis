@@ -1,5 +1,6 @@
 import React from "react";
 import { RotateCw } from "lucide-react";
+import { BrandLogo } from "./BrandLogo";
 
 export type PageTab = "tong-quan" | "khung-gio" | "so-sanh" | "lich-su";
 
@@ -29,12 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="flex items-center gap-[18px] flex-wrap justify-between">
       <div className="flex items-center gap-[14px] flex-wrap">
         {/* Pill Logo */}
-        <div className="bg-card rounded-full py-2.25 pr-[18px] pl-[14px] shadow-sh1 flex items-center gap-[8px] select-none">
-          <span className="w-[9px] h-[9px] rounded-full bg-acc inline-block" />
-          <span className="font-nunito font-bold text-[15.5px] text-ink tracking-tight">
-            Nắng Mưa
-          </span>
-        </div>
+        <BrandLogo />
 
         {/* Pill Tabs */}
         <nav className="bg-card rounded-full p-[5px] shadow-sh1 flex items-center gap-[3px]">

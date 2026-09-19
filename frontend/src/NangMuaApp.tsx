@@ -3,6 +3,7 @@ import {
   useParams,
   useNavigate,
   useLocation,
+  Link,
 } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Header, type PageTab } from './components/Header';
@@ -139,6 +140,15 @@ export const NangMuaApp: React.FC = () => {
             </main>
           )
         )}
+
+        <footer className="mt-[36px] text-center">
+          <Link
+            className="focus-ring rounded-md px-[6px] py-[3px] text-[12px] text-m3 transition-colors hover:text-acc"
+            to="/admin"
+          >
+            Quản trị
+          </Link>
+        </footer>
       </div>
     </div>
   );
