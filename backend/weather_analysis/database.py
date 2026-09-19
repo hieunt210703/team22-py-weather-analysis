@@ -1,56 +1,105 @@
-import sqlite3
+import os
+import re
 from collections.abc import Iterator
 from contextlib import contextmanager
-from pathlib import Path
 
-from weather_analysis.config import get_database_path
+from sqlalchemy import create_engine, text
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import DeclarativeBase, Session
+
+from weather_analysis.config import (
+    build_localdb_url,
+    get_data_directory,
+    get_database_file_path,
+    get_database_name,
+    get_database_url,
+)
 
 
-def connect(database_path: Path | None = None) -> sqlite3.Connection:
-    """Mở kết nối SQLite đã bật ràng buộc khóa ngoại."""
-    path = database_path or get_database_path()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    connection = sqlite3.connect(path, check_same_thread=False)
-    connection.row_factory = sqlite3.Row
-    connection.execute("PRAGMA foreign_keys = ON")
-    return connection
+class Base(DeclarativeBase):
+    """Lớp cơ sở cho các model ORM."""
+
+
+_engines: dict[str, Engine] = {}
+
+
+def get_engine() -> Engine:
+    """Lấy engine tương ứng với URL cấu hình hiện tại."""
+    database_url = get_database_url()
+    if database_url not in _engines:
+        _engines[database_url] = create_engine(database_url)
+    return _engines[database_url]
+
+
+def _sql_string(value: str) -> str:
+    return value.replace("'", "''")
 
 
 @contextmanager
-def connection_scope(database_path: Path | None = None) -> Iterator[sqlite3.Connection]:
-    """Quản lý vòng đời và giao dịch của một kết nối cơ sở dữ liệu."""
-    connection = connect(database_path)
+def session_scope() -> Iterator[Session]:
+    """Quản lý vòng đời và giao dịch của một database session."""
+    session = Session(get_engine())
     try:
-        yield connection
-        connection.commit()
+        yield session
+        session.commit()
     except Exception:
-        connection.rollback()
+        session.rollback()
         raise
     finally:
-        connection.close()
+        session.close()
 
 
-def create_schema(connection: sqlite3.Connection) -> None:
-    """Tạo các bảng dữ liệu cần thiết nếu chưa tồn tại."""
-    connection.executescript(
-        """
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL UNIQUE,
-            password_hash TEXT NOT NULL,
-            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-        );
+def ensure_database_exists() -> None:
+    """Tạo hoặc attach database LocalDB khi dùng cấu hình mặc định."""
+    if os.environ.get("WEATHER_DB_URL"):
+        return
 
-        CREATE TABLE IF NOT EXISTS cities (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE
-        );
+    database_name = get_database_name()
+    if re.fullmatch(r"[A-Za-z0-9_]+", database_name) is None:
+        raise ValueError("Tên cơ sở dữ liệu chỉ được chứa chữ, số và dấu gạch dưới")
 
-        CREATE TABLE IF NOT EXISTS monthly_temperatures (
-            city_id INTEGER NOT NULL REFERENCES cities(id),
-            month INTEGER NOT NULL CHECK (month BETWEEN 1 AND 12),
-            avg_temperature REAL NOT NULL,
-            PRIMARY KEY (city_id, month)
-        );
-        """
+    data_directory = get_data_directory()
+    data_directory.mkdir(parents=True, exist_ok=True)
+    database_file = get_database_file_path().resolve()
+    log_file = database_file.with_name(f"{database_name}_log.ldf")
+
+    escaped_name = _sql_string(database_name)
+    escaped_database_file = _sql_string(str(database_file))
+    escaped_log_file = _sql_string(str(log_file))
+    if database_file.exists():
+        create_statement = (
+            f"CREATE DATABASE [{database_name}] "
+            f"ON (FILENAME = N'{escaped_database_file}') FOR ATTACH"
+        )
+    else:
+        create_statement = (
+            f"CREATE DATABASE [{database_name}] "
+            f"ON (NAME = N'{escaped_name}', FILENAME = N'{escaped_database_file}') "
+            f"LOG ON (NAME = N'{escaped_name}_log', FILENAME = N'{escaped_log_file}')"
+        )
+
+    master_engine = create_engine(
+        build_localdb_url("master"), isolation_level="AUTOCOMMIT"
     )
+    try:
+        with master_engine.connect() as connection:
+            connection.execute(
+                text(
+                    f"""
+                    IF DB_ID(:database_name) IS NULL
+                    BEGIN
+                        {create_statement}
+                    END
+                    """
+                ),
+                {"database_name": database_name},
+            )
+    finally:
+        master_engine.dispose()
+
+
+def create_schema() -> None:
+    """Tạo các bảng dữ liệu cần thiết nếu chưa tồn tại."""
+    from weather_analysis.models import User
+
+    User.metadata.create_all(get_engine())

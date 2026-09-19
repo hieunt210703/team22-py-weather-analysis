@@ -1,16 +1,19 @@
 from collections.abc import Iterator
-from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
 from weather_analysis.api.app import app
 
 
 @pytest.fixture
-def client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Iterator[TestClient]:
-    database_path = tmp_path / "weather-api-test.db"
-    monkeypatch.setenv("WEATHER_DB_PATH", str(database_path))
+def client(
+    monkeypatch: pytest.MonkeyPatch,
+    test_database_url: str,
+    session: Session,
+) -> Iterator[TestClient]:
+    monkeypatch.setenv("WEATHER_DB_URL", test_database_url)
 
     with TestClient(app) as test_client:
         yield test_client

@@ -7,4 +7,5 @@ __pycache__/
 .ruff_cache/
 
 # Cơ sở dữ liệu tạo khi chạy ứng dụng
-data/*.db
+data/*.mdf
+data/*.ldf

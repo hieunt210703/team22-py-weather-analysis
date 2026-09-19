@@ -1,16 +1,16 @@
-import sqlite3
 from collections.abc import Iterator
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, Request, status
+from sqlalchemy.orm import Session
 
-from weather_analysis.database import connection_scope
+from weather_analysis.database import session_scope
 
 
-def get_connection() -> Iterator[sqlite3.Connection]:
-    """Cấp một kết nối cơ sở dữ liệu riêng cho mỗi request."""
-    with connection_scope() as connection:
-        yield connection
+def get_session() -> Iterator[Session]:
+    """Cấp một database session riêng cho mỗi request."""
+    with session_scope() as session:
+        yield session
 
 
 def get_current_username(request: Request) -> str:
@@ -24,5 +24,5 @@ def get_current_username(request: Request) -> str:
     return username
 
 
-DbConnection = Annotated[sqlite3.Connection, Depends(get_connection)]
+DbSession = Annotated[Session, Depends(get_session)]
 CurrentUsername = Annotated[str, Depends(get_current_username)]

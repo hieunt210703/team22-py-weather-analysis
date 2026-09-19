@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request, Response, status
 
-from weather_analysis.api.dependencies import CurrentUsername, DbConnection
+from weather_analysis.api.dependencies import CurrentUsername, DbSession
 from weather_analysis.api.schemas import LoginRequest, UserResponse
 from weather_analysis.services.auth_service import authenticate
 
@@ -12,9 +12,9 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 def login(
     credentials: LoginRequest,
     request: Request,
-    connection: DbConnection,
+    session: DbSession,
 ) -> UserResponse:
-    user = authenticate(connection, credentials.username, credentials.password)
+    user = authenticate(session, credentials.username, credentials.password)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

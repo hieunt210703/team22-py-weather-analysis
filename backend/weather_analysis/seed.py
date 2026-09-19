@@ -1,41 +1,44 @@
-import sqlite3
+import csv
+from pathlib import Path
 
-from weather_analysis.config import ADMIN_PASSWORD, ADMIN_USERNAME
+from sqlalchemy.orm import Session
+
+from weather_analysis.database import create_schema, ensure_database_exists, session_scope
 from weather_analysis.repositories.user_repository import UserRepository
 from weather_analysis.security import hash_password
 
 
-CITY_TEMPERATURES: dict[str, tuple[float, ...]] = {
-    "Hà Nội": (16.4, 17.2, 20.1, 24.2, 27.6, 29.3, 29.2, 28.6, 27.5, 24.9, 21.5, 18.2),
-    "TP.HCM": (26.0, 26.8, 28.0, 29.1, 28.8, 27.8, 27.5, 27.4, 27.3, 27.2, 27.0, 26.2),
-}
+DEFAULT_USERS_PATH = Path(__file__).resolve().parent.parent / "data" / "seed" / "users.csv"
 
 
-def seed_all(connection: sqlite3.Connection) -> None:
-    """Tạo tài khoản quản trị và dữ liệu nhiệt độ mẫu theo cách lặp lại an toàn."""
-    user_repository = UserRepository(connection)
-    if user_repository.find_by_username(ADMIN_USERNAME) is None:
-        user_repository.insert(ADMIN_USERNAME, hash_password(ADMIN_PASSWORD))
+def load_users(path: Path) -> list[tuple[str, str]]:
+    """Đọc danh sách tài khoản seed từ tệp CSV."""
+    users: list[tuple[str, str]] = []
+    with path.open(encoding="utf-8-sig", newline="") as file:
+        for row in csv.DictReader(file):
+            username = row.get("username")
+            password = row.get("password")
+            if not username or not password:
+                raise ValueError("Dữ liệu seed người dùng phải có username và password")
+            users.append((username, password))
+    return users
 
-    for city_name, temperatures in CITY_TEMPERATURES.items():
-        connection.execute(
-            "INSERT INTO cities (name) VALUES (?) ON CONFLICT(name) DO NOTHING",
-            (city_name,),
-        )
-        city_row = connection.execute(
-            "SELECT id FROM cities WHERE name = ?", (city_name,)
-        ).fetchone()
-        if city_row is None:
-            raise RuntimeError("Không thể đọc thành phố vừa tạo")
-        city_id = int(city_row["id"])
-        connection.executemany(
-            """
-            INSERT INTO monthly_temperatures (city_id, month, avg_temperature)
-            VALUES (?, ?, ?)
-            ON CONFLICT(city_id, month) DO NOTHING
-            """,
-            [
-                (city_id, month, temperature)
-                for month, temperature in enumerate(temperatures, start=1)
-            ],
-        )
+
+def seed_all(session: Session) -> None:
+    """Tạo các tài khoản mẫu theo cách lặp lại an toàn."""
+    user_repository = UserRepository(session)
+    for username, password in load_users(DEFAULT_USERS_PATH):
+        if user_repository.find_by_username(username) is None:
+            user_repository.insert(username, hash_password(password))
+
+
+def main() -> None:
+    """Khởi tạo schema và dữ liệu mẫu cho cơ sở dữ liệu."""
+    ensure_database_exists()
+    create_schema()
+    with session_scope() as session:
+        seed_all(session)
+
+
+if __name__ == "__main__":
+    main()

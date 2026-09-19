@@ -1,28 +1,17 @@
-from dataclasses import dataclass
+from datetime import datetime
+
+from sqlalchemy import String, Unicode, func
+from sqlalchemy.orm import Mapped, mapped_column
+
+from weather_analysis.database import Base
 
 
-@dataclass(frozen=True)
-class User:
-    id: int
-    username: str
-    password_hash: str
-    created_at: str
+class User(Base):
+    """Tài khoản có thể đăng nhập vào ứng dụng."""
 
+    __tablename__ = "users"
 
-@dataclass(frozen=True)
-class City:
-    id: int
-    name: str
-
-
-@dataclass(frozen=True)
-class MonthlyTemperature:
-    city_id: int
-    month: int
-    avg_temperature: float
-
-
-@dataclass(frozen=True)
-class TemperatureComparison:
-    months: list[int]
-    temperatures_by_city: dict[str, list[float]]
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(Unicode(100), unique=True)
+    password_hash: Mapped[str] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(server_default=func.sysutcdatetime())
