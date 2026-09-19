@@ -17,17 +17,25 @@ def normalize_vietnamese(text: str) -> str:
 
 
 def search_locations(session: Session, query: str) -> list[Location]:
-    """Tìm địa điểm theo tên hoặc vùng, không phân biệt dấu."""
+    """Tìm địa điểm theo tên, vùng hoặc tên gọi khác, không phân biệt dấu."""
     locations = LocationRepository(session).list_all()
     normalized_query = normalize_vietnamese(query)
     if not normalized_query:
         return locations
-    return [
-        location
-        for location in locations
-        if normalized_query in normalize_vietnamese(location.name)
-        or normalized_query in normalize_vietnamese(location.region_label)
-    ]
+    matches: list[Location] = []
+    for location in locations:
+        aliases = (location.aliases or "").split(";")
+        if (
+            normalized_query in normalize_vietnamese(location.name)
+            or normalized_query in normalize_vietnamese(location.region_label)
+            or any(
+                normalized_query in normalize_vietnamese(alias)
+                for alias in aliases
+                if alias.strip()
+            )
+        ):
+            matches.append(location)
+    return matches
 
 
 def get_pinned_locations(session: Session) -> list[Location]:

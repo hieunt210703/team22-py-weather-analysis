@@ -40,6 +40,24 @@ def test_import_replaces_locations(client: Client) -> None:
     assert client.get("/api/locations").json()[0]["slug"] == "dia-diem-moi"
 
 
+def test_import_adds_aliases_before_replacing_locations(client: Client) -> None:
+    login(client)
+    content = (
+        HEADER + "Hồ Chí Minh,ho-chi-minh,dongnam,Đông Nam Bộ,0,10,106,1\n"
+    )
+
+    response = client.post(
+        "/api/admin/locations/import",
+        files={"file": ("locations.csv", content, "text/csv")},
+    )
+
+    assert response.status_code == 200
+    search_response = client.get("/api/locations", params={"q": "HCM"})
+    assert [location["slug"] for location in search_response.json()] == [
+        "ho-chi-minh"
+    ]
+
+
 def test_import_returns_validation_detail_as_string(client: Client) -> None:
     login(client)
 

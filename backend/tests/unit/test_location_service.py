@@ -23,6 +23,15 @@ def test_search_locations_matches_region_without_marks(session: Session) -> None
     assert {location.region_code for location in locations} == {"taynguyen"}
 
 
+def test_search_locations_matches_alias(session: Session) -> None:
+    assert [location.slug for location in search_locations(session, "HCM")] == [
+        "ho-chi-minh"
+    ]
+    assert [location.slug for location in search_locations(session, "sai gon")] == [
+        "ho-chi-minh"
+    ]
+
+
 def test_search_locations_returns_all_for_blank_query(session: Session) -> None:
     assert len(search_locations(session, "  ")) == 91
 

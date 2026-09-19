@@ -42,6 +42,7 @@ class Location(Base):
     latitude: Mapped[float]
     longitude: Mapped[float]
     pin_order: Mapped[int | None]
+    aliases: Mapped[str | None] = mapped_column(Unicode(500))
 
 
 class SystemSetting(Base):

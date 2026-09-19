@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from weather_analysis.repositories.location_repository import LocationRepository
 from weather_analysis.services.location_import_service import (
     LocationImportError,
+    decode_locations_csv,
     import_locations,
     parse_locations_csv,
 )
@@ -22,6 +23,19 @@ def test_parse_locations_csv_accepts_valid_data() -> None:
     assert len(locations) == 1
     assert locations[0].region_code == "dbbb"
     assert locations[0].pin_order == 2
+
+
+def test_parse_locations_csv_reads_optional_aliases() -> None:
+    content = (
+        HEADER.removesuffix("\n")
+        + ",aliases\n"
+        + "Hồ Chí Minh,ho-chi-minh,dongnam,Đông Nam Bộ,0,10,106,1,"
+        + '"HCM;Sài Gòn"\n'
+    )
+
+    locations = parse_locations_csv(content)
+
+    assert locations[0].aliases == "HCM;Sài Gòn"
 
 
 def test_parse_locations_csv_rejects_missing_column() -> None:
@@ -69,6 +83,10 @@ def test_parse_locations_csv_rejects_empty_file() -> None:
 def test_import_locations_rejects_non_utf8_content(session: Session) -> None:
     with pytest.raises(LocationImportError, match="UTF-8"):
         import_locations(session, b"\xff\xfe")
+
+
+def test_decode_locations_csv_accepts_utf8_bom() -> None:
+    assert decode_locations_csv(b"\xef\xbb\xbfname") == "name"
 
 
 def test_import_locations_replaces_old_data(session: Session) -> None:

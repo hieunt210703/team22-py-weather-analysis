@@ -6,10 +6,10 @@ from fastapi.responses import FileResponse
 from weather_analysis.api.dependencies import DbSession, get_current_username
 from weather_analysis.api.schemas import LocationImportResponse
 from weather_analysis.seed import LOCATIONS_SEED_PATH
-from weather_analysis.services.location_import_service import (
-    LocationImportError,
-    import_locations,
+from weather_analysis.services.location_alias_service import (
+    import_locations_with_aliases,
 )
+from weather_analysis.services.location_import_service import LocationImportError
 
 
 MAX_UPLOAD_BYTES = 1024 * 1024
@@ -32,7 +32,7 @@ def import_locations_file(
         )
 
     try:
-        imported_count = import_locations(session, content)
+        imported_count = import_locations_with_aliases(session, content)
     except LocationImportError as error:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,

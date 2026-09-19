@@ -78,6 +78,10 @@ Trang quản trị cho phép tải tệp CSV mẫu và thay toàn bộ danh sác
 phải dùng mã hóa UTF-8 và có các cột:
 `name,slug,region_code,region_label,temp_offset,latitude,longitude,pin_order`.
 `pin_order` có thể để trống; các cột còn lại bắt buộc có dữ liệu hợp lệ.
+Tên viết tắt và tên gọi khác được quản lý trong
+`backend/data/seed/location-aliases.csv` và tự động gắn theo `slug` khi nhập.
+Với database đã có dữ liệu từ phiên bản cũ, chạy migration rồi nhập lại tệp mẫu
+ở trang quản trị để cập nhật các tên gọi này.
 
 ## Chạy kiểm tra
 

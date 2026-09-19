@@ -11,7 +11,7 @@ from weather_analysis.database import (
 from weather_analysis.repositories.location_repository import LocationRepository
 from weather_analysis.repositories.user_repository import UserRepository
 from weather_analysis.security import hash_password
-from weather_analysis.services.location_import_service import import_locations
+from weather_analysis.services.location_alias_service import import_locations_with_aliases
 
 
 DEFAULT_USERS_PATH = Path(__file__).resolve().parent.parent / "data" / "seed" / "users.csv"
@@ -36,7 +36,7 @@ def load_users(path: Path) -> list[tuple[str, str]]:
 def seed_locations(session: Session) -> None:
     """Nạp địa điểm mẫu khi bảng chưa có dữ liệu."""
     if LocationRepository(session).count() == 0:
-        import_locations(session, LOCATIONS_SEED_PATH.read_bytes())
+        import_locations_with_aliases(session, LOCATIONS_SEED_PATH.read_bytes())
 
 
 def seed_all(session: Session) -> None:

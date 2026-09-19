@@ -32,6 +32,7 @@ def test_migrations_can_downgrade_and_upgrade(test_database_url: str) -> None:
         "latitude",
         "longitude",
         "pin_order",
+        "aliases",
     }
     assert {
         column["name"]

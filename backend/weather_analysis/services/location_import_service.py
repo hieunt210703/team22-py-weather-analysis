@@ -121,6 +121,13 @@ def parse_locations_csv(content: str) -> list[Location]:
         latitude = _finite_number(row, "latitude", line_number, errors)
         longitude = _finite_number(row, "longitude", line_number, errors)
         pin_order = _pin_order(row, line_number, errors)
+        aliases = (row.get("aliases") or "").strip() or None
+
+        if aliases is not None and len(aliases) > 500:
+            _add_error(
+                errors,
+                f"Dòng {line_number}: aliases không được vượt quá 500 ký tự",
+            )
 
         if slug and SLUG_PATTERN.fullmatch(slug) is None:
             _add_error(
@@ -173,6 +180,7 @@ def parse_locations_csv(content: str) -> list[Location]:
                     latitude=latitude,
                     longitude=longitude,
                     pin_order=pin_order,
+                    aliases=aliases,
                 )
             )
 
@@ -183,13 +191,16 @@ def parse_locations_csv(content: str) -> list[Location]:
     return locations
 
 
-def import_locations(session: Session, content: bytes) -> int:
-    """Thay toàn bộ địa điểm bằng dữ liệu CSV hợp lệ."""
+def decode_locations_csv(content: bytes) -> str:
+    """Giải mã tệp CSV địa điểm dùng mã hóa UTF-8."""
     try:
-        decoded_content = content.decode("utf-8-sig")
+        return content.decode("utf-8-sig")
     except UnicodeDecodeError as error:
         raise LocationImportError(["Tệp phải được mã hóa UTF-8"]) from error
 
-    locations = parse_locations_csv(decoded_content)
+
+def import_locations(session: Session, content: bytes) -> int:
+    """Thay toàn bộ địa điểm bằng dữ liệu CSV hợp lệ."""
+    locations = parse_locations_csv(decode_locations_csv(content))
     LocationRepository(session).replace_all(locations)
     return len(locations)
