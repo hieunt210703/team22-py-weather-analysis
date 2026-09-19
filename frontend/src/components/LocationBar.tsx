@@ -1,14 +1,12 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Star } from "lucide-react";
-import {
-  type LocationItem,
-  PINNED_LOCATION_NAMES,
-  searchLocations,
-  findLocationByName,
-} from "../api/weatherApi";
+import { useDebouncedValue } from "../hooks/useDebouncedValue";
+import { useLocations, usePinnedLocations } from "../hooks/useLocations";
+import type { LocationItem } from "../types";
 
 interface LocationBarProps {
   currentLocation: LocationItem;
+  locationCount: number;
   onSelectLocation: (location: LocationItem) => void;
   favorites: string[]; // array of slugs
   onToggleFavorite: (slug: string) => void;
@@ -16,6 +14,7 @@ interface LocationBarProps {
 
 export const LocationBar: React.FC<LocationBarProps> = ({
   currentLocation,
+  locationCount,
   onSelectLocation,
   favorites,
   onToggleFavorite,
@@ -24,6 +23,11 @@ export const LocationBar: React.FC<LocationBarProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const debouncedQuery = useDebouncedValue(query, 250);
+  const { data: filteredLocations = [], isFetching } = useLocations(
+    debouncedQuery.trim(),
+  );
+  const { data: pinnedLocations = [] } = usePinnedLocations();
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -40,26 +44,17 @@ export const LocationBar: React.FC<LocationBarProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Filter locations
-  const filteredLocations = useMemo(() => {
-    return searchLocations(query);
-  }, [query]);
-
   // Compute 6 chips
   const chips = useMemo(() => {
-    const isCurrentPinned = PINNED_LOCATION_NAMES.includes(
-      currentLocation.name,
+    const isCurrentPinned = pinnedLocations.some(
+      (location) => location.slug === currentLocation.slug,
     );
     if (isCurrentPinned) {
-      return PINNED_LOCATION_NAMES.map((name) => findLocationByName(name));
+      return pinnedLocations;
     }
     // Non-pinned occupies first chip, pushing out last
-    const firstNonPinned = currentLocation;
-    const rest = PINNED_LOCATION_NAMES.slice(0, 5).map((name) =>
-      findLocationByName(name),
-    );
-    return [firstNonPinned, ...rest];
-  }, [currentLocation]);
+    return [currentLocation, ...pinnedLocations.slice(0, -1)];
+  }, [currentLocation, pinnedLocations]);
 
   const handleSelect = (loc: LocationItem) => {
     onSelectLocation(loc);
@@ -102,14 +97,18 @@ export const LocationBar: React.FC<LocationBarProps> = ({
 
           {/* Location Count Badge */}
           <span className="text-[11.5px] text-m4 whitespace-nowrap select-none">
-            91 địa điểm
+            {locationCount} địa điểm
           </span>
         </div>
 
         {/* Dropdown Results */}
         {isOpen && (
           <div className="absolute top-[46px] left-0 w-[330px] max-h-[330px] overflow-y-auto bg-card border border-border rounded-[18px] shadow-sh3 p-[8px] z-50">
-            {filteredLocations.length === 0 ? (
+            {isFetching && filteredLocations.length === 0 ? (
+              <div className="py-[16px] px-[14px] text-[13px] text-m2 text-center">
+                Đang tìm địa điểm…
+              </div>
+            ) : filteredLocations.length === 0 ? (
               <div className="py-[16px] px-[14px] text-[13px] text-m2 text-center">
                 Không tìm thấy địa điểm nào khớp.
               </div>
@@ -159,7 +158,7 @@ export const LocationBar: React.FC<LocationBarProps> = ({
               onClick={() => onSelectLocation(loc)}
               className={`px-[14px] py-[7px] rounded-full text-[13px] transition-all duration-120 cursor-pointer focus-ring select-none ${
                 isActive
-                  ? "bg-acc text-  font-semibold border border-acc shadow-xs"
+                  ? "bg-acc text-accInk font-semibold border border-acc shadow-xs"
                   : "bg-card border border-border text-m1 hover:text-ink"
               }`}
             >

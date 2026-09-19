@@ -59,4 +59,24 @@ describe('requestJson', () => {
       status: 422,
     })
   })
+
+  it('không đặt JSON Content-Type khi body là FormData', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ importedCount: 1 }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    const body = new FormData()
+    body.append('file', new Blob(['data']), 'locations.csv')
+
+    await requestJson('/api/admin/locations/import', {
+      method: 'POST',
+      body,
+    })
+
+    const requestOptions = fetchMock.mock.calls[0][1] as RequestInit
+    expect(new Headers(requestOptions.headers).has('Content-Type')).toBe(false)
+  })
 })

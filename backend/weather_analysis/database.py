@@ -2,6 +2,10 @@ import os
 import re
 from collections.abc import Iterator
 from contextlib import contextmanager
+from pathlib import Path
+
+from alembic import command
+from alembic.config import Config
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
@@ -21,6 +25,7 @@ class Base(DeclarativeBase):
 
 
 _engines: dict[str, Engine] = {}
+ALEMBIC_CONFIG_PATH = Path(__file__).resolve().parent.parent / "alembic.ini"
 
 
 def get_engine() -> Engine:
@@ -98,8 +103,7 @@ def ensure_database_exists() -> None:
         master_engine.dispose()
 
 
-def create_schema() -> None:
-    """Tạo các bảng dữ liệu cần thiết nếu chưa tồn tại."""
-    from weather_analysis.models import User
-
-    User.metadata.create_all(get_engine())
+def upgrade_database() -> None:
+    """Chạy các migration còn thiếu để schema lên phiên bản mới nhất."""
+    config = Config(ALEMBIC_CONFIG_PATH)
+    command.upgrade(config, "head")

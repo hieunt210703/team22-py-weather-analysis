@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
-import { type LocationItem, getHistoryData } from '../api/weatherApi';
+import { getHistoryData } from '../api/weatherApi';
 import { clamp } from '../lib/scoring';
+import type { LocationItem } from '../types';
 
 interface HistoryPageProps {
   currentLocation: LocationItem;

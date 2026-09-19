@@ -6,6 +6,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { logout } from '../api/auth'
 import { ApiError } from '../api/client'
 import { BrandLogo } from '../components/BrandLogo'
+import { LocationImportForm } from '../components/LocationImportForm'
 import {
   CURRENT_USER_QUERY_KEY,
   useCurrentUser,
@@ -90,8 +91,9 @@ export function AdminPage(): JSX.Element {
             Xin chào, {currentUser.username}
           </h1>
           <p className="mt-[9px] max-w-[720px] text-[13.5px] leading-relaxed text-m2">
-            Chưa có công cụ quản trị nào. Các công cụ quản lý dữ liệu sẽ xuất hiện tại đây khi sẵn sàng.
+            Quản lý dữ liệu được dùng trên trang phân tích thời tiết.
           </p>
+          <LocationImportForm />
         </main>
       </div>
     </div>

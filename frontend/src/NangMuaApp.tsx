@@ -5,7 +5,7 @@ import {
   useLocation,
   Link,
 } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { skipToken, useQuery } from '@tanstack/react-query';
 import { Header, type PageTab } from './components/Header';
 import { LocationBar } from './components/LocationBar';
 import { OverviewPage } from './pages/OverviewPage';
@@ -15,21 +15,29 @@ import { HistoryPage } from './pages/HistoryPage';
 import { WeatherSkeleton } from './components/WeatherSkeleton';
 import { ErrorMessage } from './components/ErrorMessage';
 import {
+  DEFAULT_LOCATION_SLUG,
   findLocationBySlug,
   findNearestLocation,
-  fetchWeatherData,
-  type LocationItem,
-} from './api/weatherApi';
+} from './api/locations';
+import { fetchWeatherData } from './api/weatherApi';
+import { useLocations } from './hooks/useLocations';
+import type { LocationItem } from './types';
 
 const FAVORITES_STORAGE_KEY = 'nang_mua_favorites';
+const EMPTY_LOCATIONS: LocationItem[] = [];
 
 export const NangMuaApp: React.FC = () => {
   const { locationSlug, page } = useParams<{ locationSlug?: string; page?: string }>();
   const navigate = useNavigate();
   const routerLocation = useLocation();
+  const locationsQuery = useLocations();
+  const locations = locationsQuery.data ?? EMPTY_LOCATIONS;
 
   // Selected location from URL or fallback
-  const currentLocation: LocationItem = findLocationBySlug(locationSlug || 'ha-noi');
+  const currentLocation = findLocationBySlug(
+    locations,
+    locationSlug || DEFAULT_LOCATION_SLUG,
+  );
 
   // Selected tab
   const validPages: PageTab[] = ['tong-quan', 'khung-gio', 'so-sanh', 'lich-su'];
@@ -61,24 +69,30 @@ export const NangMuaApp: React.FC = () => {
 
   // Check geolocation on very first visit if on root '/'
   useEffect(() => {
-    if (routerLocation.pathname === '/' || !locationSlug) {
+    if (locations.length > 0 && (routerLocation.pathname === '/' || !locationSlug)) {
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           pos => {
-            const nearest = findNearestLocation(pos.coords.latitude, pos.coords.longitude);
-            navigate(`/${nearest.slug}/tong-quan`, { replace: true });
+            const nearest = findNearestLocation(
+              locations,
+              pos.coords.latitude,
+              pos.coords.longitude,
+            );
+            navigate(`/${nearest?.slug ?? DEFAULT_LOCATION_SLUG}/tong-quan`, {
+              replace: true,
+            });
           },
           () => {
             // Default fallback
-            navigate(`/ha-noi/tong-quan`, { replace: true });
+            navigate(`/${DEFAULT_LOCATION_SLUG}/tong-quan`, { replace: true });
           },
           { timeout: 5000 }
         );
       } else {
-        navigate(`/ha-noi/tong-quan`, { replace: true });
+        navigate(`/${DEFAULT_LOCATION_SLUG}/tong-quan`, { replace: true });
       }
     }
-  }, [locationSlug, routerLocation.pathname, navigate]);
+  }, [locationSlug, locations, routerLocation.pathname, navigate]);
 
   // TanStack Query for weather data (cached 30 minutes)
   const {
@@ -88,8 +102,10 @@ export const NangMuaApp: React.FC = () => {
     isFetching,
     refetch,
   } = useQuery({
-    queryKey: ['weather', currentLocation.slug],
-    queryFn: () => fetchWeatherData(currentLocation),
+    queryKey: ['weather', currentLocation?.slug],
+    queryFn: currentLocation
+      ? () => fetchWeatherData(currentLocation)
+      : skipToken,
     staleTime: 30 * 60 * 1000,
     retry: 1,
   });
@@ -99,8 +115,34 @@ export const NangMuaApp: React.FC = () => {
   };
 
   const handleSelectPage = (nextPage: PageTab) => {
-    navigate(`/${currentLocation.slug}/${nextPage}`);
+    if (currentLocation) {
+      navigate(`/${currentLocation.slug}/${nextPage}`);
+    }
   };
+
+  if (locationsQuery.isPending) {
+    return (
+      <div className="min-h-screen bg-bg text-ink">
+        <div className="max-w-[1080px] mx-auto px-[22px] pt-[26px] pb-[80px]">
+          <WeatherSkeleton />
+        </div>
+      </div>
+    );
+  }
+
+  if (locationsQuery.isError || !currentLocation) {
+    return (
+      <div className="min-h-screen bg-bg text-ink">
+        <div className="max-w-[1080px] mx-auto px-[22px] pt-[26px] pb-[80px]">
+          <ErrorMessage
+            title="Không tải được danh sách địa điểm"
+            message="Vui lòng kiểm tra kết nối và thử lại."
+            onRetry={() => void locationsQuery.refetch()}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-bg text-ink selection:bg-accSoft selection:text-acc">
@@ -117,6 +159,7 @@ export const NangMuaApp: React.FC = () => {
         {/* Common Location Bar */}
         <LocationBar
           currentLocation={currentLocation}
+          locationCount={locations.length}
           onSelectLocation={handleSelectLocation}
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
@@ -127,7 +170,14 @@ export const NangMuaApp: React.FC = () => {
           <WeatherSkeleton />
         ) : isError && !weatherData ? (
           <ErrorMessage
-            locationName={currentLocation.name}
+            title="Không tải được dữ liệu thời tiết"
+            message={
+              <>
+                Không tải được dữ liệu thời tiết cho{' '}
+                <strong>{currentLocation.name}</strong>. Vui lòng kiểm tra kết
+                nối mạng và thử lại.
+              </>
+            }
             onRetry={() => refetch()}
           />
         ) : (
@@ -135,7 +185,12 @@ export const NangMuaApp: React.FC = () => {
             <main>
               {currentPage === 'tong-quan' && <OverviewPage data={weatherData} />}
               {currentPage === 'khung-gio' && <PlannerPage data={weatherData} />}
-              {currentPage === 'so-sanh' && <ComparePage currentLocation={currentLocation} />}
+              {currentPage === 'so-sanh' && (
+                <ComparePage
+                  currentLocation={currentLocation}
+                  locations={locations}
+                />
+              )}
               {currentPage === 'lich-su' && <HistoryPage currentLocation={currentLocation} />}
             </main>
           )

@@ -3,12 +3,21 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session
 
-from weather_analysis.database import create_schema, ensure_database_exists, session_scope
+from weather_analysis.database import (
+    ensure_database_exists,
+    session_scope,
+    upgrade_database,
+)
+from weather_analysis.repositories.location_repository import LocationRepository
 from weather_analysis.repositories.user_repository import UserRepository
 from weather_analysis.security import hash_password
+from weather_analysis.services.location_import_service import import_locations
 
 
 DEFAULT_USERS_PATH = Path(__file__).resolve().parent.parent / "data" / "seed" / "users.csv"
+LOCATIONS_SEED_PATH = (
+    Path(__file__).resolve().parent.parent / "data" / "seed" / "locations.csv"
+)
 
 
 def load_users(path: Path) -> list[tuple[str, str]]:
@@ -24,18 +33,25 @@ def load_users(path: Path) -> list[tuple[str, str]]:
     return users
 
 
+def seed_locations(session: Session) -> None:
+    """Nạp địa điểm mẫu khi bảng chưa có dữ liệu."""
+    if LocationRepository(session).count() == 0:
+        import_locations(session, LOCATIONS_SEED_PATH.read_bytes())
+
+
 def seed_all(session: Session) -> None:
-    """Tạo các tài khoản mẫu theo cách lặp lại an toàn."""
+    """Tạo dữ liệu mẫu theo cách lặp lại an toàn."""
     user_repository = UserRepository(session)
     for username, password in load_users(DEFAULT_USERS_PATH):
         if user_repository.find_by_username(username) is None:
             user_repository.insert(username, hash_password(password))
+    seed_locations(session)
 
 
 def main() -> None:
     """Khởi tạo schema và dữ liệu mẫu cho cơ sở dữ liệu."""
     ensure_database_exists()
-    create_schema()
+    upgrade_database()
     with session_scope() as session:
         seed_all(session)
 

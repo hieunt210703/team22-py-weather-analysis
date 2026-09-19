@@ -22,6 +22,23 @@ python -m pip install -r requirements-dev.txt
 python -m weather_analysis.seed
 ```
 
+Lệnh seed tự chạy các migration còn thiếu rồi nạp tài khoản và 91 địa điểm mẫu.
+Các lần chạy sau không ghi đè danh sách địa điểm đã được quản trị viên nhập.
+
+Nếu database LocalDB được tạo từ phiên bản cũ và đã có bảng `users` nhưng chưa
+có bảng `alembic_version`, đánh dấu migration baseline trước khi nâng cấp:
+
+```powershell
+cd backend
+.\.venv\Scripts\Activate.ps1
+alembic stamp 0001
+alembic upgrade head
+alembic current
+```
+
+Với database mới, chỉ cần chạy `alembic upgrade head`. Có thể quay lại toàn bộ
+schema bằng `alembic downgrade base` trong môi trường phát triển hoặc kiểm thử.
+
 Cài đặt frontend trong một terminal khác:
 
 ```powershell
@@ -53,6 +70,11 @@ Trang quản trị ở `http://localhost:5173/admin/dang-nhap`, đăng nhập b�
 - Tên đăng nhập: `admin`
 - Mật khẩu: `adminpw`
 
+Trang quản trị cho phép tải tệp CSV mẫu và thay toàn bộ danh sách địa điểm. Tệp
+phải dùng mã hóa UTF-8 và có các cột:
+`name,slug,region_code,region_label,temp_offset,latitude,longitude,pin_order`.
+`pin_order` có thể để trống; các cột còn lại bắt buộc có dữ liệu hợp lệ.
+
 ## Chạy kiểm tra
 
 Kiểm tra backend:
@@ -77,8 +99,10 @@ npm test
 ## Cấu trúc chính
 
 - `backend/weather_analysis/api/`: các route FastAPI và schema trao đổi dữ liệu.
-- `backend/weather_analysis/services/`: nghiệp vụ xác thực.
+- `backend/weather_analysis/services/`: nghiệp vụ xác thực, tra cứu và nhập địa điểm.
 - `backend/weather_analysis/repositories/`: truy cập dữ liệu qua SQLAlchemy ORM.
+- `backend/migrations/`: lịch sử thay đổi schema database bằng Alembic.
+- `backend/data/seed/`: dữ liệu mẫu cho tài khoản và địa điểm.
 - `backend/tests/`: unit test và API test.
 - `frontend/src/api/`: mã gọi API từ trình duyệt.
 - `frontend/src/pages/`: các màn hình của ứng dụng.

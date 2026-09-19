@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { AlertCircle, RotateCw } from 'lucide-react';
 
 interface ErrorMessageProps {
-  locationName: string;
+  title: string;
+  message: ReactNode;
   onRetry: () => void;
 }
 
-export const ErrorMessage: React.FC<ErrorMessageProps> = ({ locationName, onRetry }) => {
+export const ErrorMessage: React.FC<ErrorMessageProps> = ({ title, message, onRetry }) => {
   return (
     <div className="bg-card rounded-[24px] p-[32px] shadow-sh2 mt-[20px] text-center max-w-[540px] mx-auto border border-border">
       <div className="w-[48px] h-[48px] rounded-full bg-weak/40 text-acc flex items-center justify-center mx-auto mb-[16px]">
@@ -14,11 +15,11 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({ locationName, onRetr
       </div>
 
       <h3 className="font-nunito font-semibold text-[18px] text-ink mb-[6px]">
-        Không tải được dữ liệu thời tiết
+        {title}
       </h3>
 
       <p className="text-[14px] text-m2 leading-[1.6] mb-[20px]">
-        Không tải được dữ liệu thời tiết cho <strong>{locationName}</strong>. Vui lòng kiểm tra kết nối mạng và thử lại.
+        {message}
       </p>
 
       <button

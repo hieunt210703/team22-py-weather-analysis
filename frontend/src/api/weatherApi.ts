@@ -1,5 +1,5 @@
-import locationsData from '../data/locations.json';
 import regionClimateData from '../data/region-climate.json';
+import type { LocationItem } from '../types';
 import {
   calculateHourlyScore,
   calculateDayScore,
@@ -15,16 +15,6 @@ import {
   type BestWindowItem,
   type ActivityWindowItem,
 } from '../lib/scoring';
-
-export interface LocationItem {
-  name: string;
-  slug: string;
-  region: string;
-  regionLabel: string;
-  tempOffset: number;
-  lat: number;
-  lon: number;
-}
 
 export interface DayForecastItem {
   date: string;
@@ -68,67 +58,6 @@ export interface ProcessedWeatherData {
   details: WeatherDetails;
   daily7: DayForecastItem[];
   activities: ActivityWindowItem[];
-}
-
-export const LOCATIONS: LocationItem[] = locationsData.locations as LocationItem[];
-export const PINNED_LOCATION_NAMES: string[] = locationsData.pinned;
-export const REGIONS: Record<string, string> = locationsData.regions;
-
-export function findLocationBySlug(slug: string): LocationItem {
-  return LOCATIONS.find(l => l.slug === slug) || LOCATIONS[0];
-}
-
-export function findLocationByName(name: string): LocationItem {
-  return LOCATIONS.find(l => l.name.toLowerCase() === name.toLowerCase()) || LOCATIONS[0];
-}
-
-/**
- * Tìm kiếm địa điểm với chuẩn hoá không dấu và xử lý ký tự Đ/đ riêng
- */
-export function normalizeVietnamese(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/[đĐ]/g, 'd')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .trim();
-}
-
-export function searchLocations(query: string): LocationItem[] {
-  if (!query.trim()) {
-    return [...LOCATIONS].sort((a, b) => a.name.localeCompare(b.name, 'vi')).slice(0, 60);
-  }
-  const normQuery = normalizeVietnamese(query);
-  return LOCATIONS.filter(loc => {
-    const normName = normalizeVietnamese(loc.name);
-    const normRegion = normalizeVietnamese(loc.regionLabel);
-    return normName.includes(normQuery) || normRegion.includes(normQuery);
-  });
-}
-
-/**
- * Tính khoảng cách theo công thức Haversine để tìm vị trí gần nhất
- */
-export function findNearestLocation(lat: number, lon: number): LocationItem {
-  let nearest = LOCATIONS[0];
-  let minDistance = Infinity;
-
-  const toRad = (x: number) => (x * Math.PI) / 180;
-  for (const loc of LOCATIONS) {
-    if (!loc.lat || !loc.lon) continue;
-    const dLat = toRad(loc.lat - lat);
-    const dLon = toRad(loc.lon - lon);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat)) * Math.cos(toRad(loc.lat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const dist = 6371 * c; // km
-    if (dist < minDistance) {
-      minDistance = dist;
-      nearest = loc;
-    }
-  }
-  return nearest;
 }
 
 const VIETNAMESE_DAYS = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];

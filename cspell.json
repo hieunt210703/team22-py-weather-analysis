@@ -1,6 +1,7 @@
 {
   "language": "en,vi",
   "words": [
+    "alembic",
     "bcrypt",
     "fastapi",
     "httpx",

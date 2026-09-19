@@ -1,19 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import {
-  type LocationItem,
-  LOCATIONS,
   getCompareData,
-  findLocationByName,
 } from '../api/weatherApi';
+import { findLocationByName } from '../api/locations';
 import {
   getCompareSummary,
   getCompareConclusion,
   getYearRecommendation,
   clamp,
 } from '../lib/scoring';
+import type { LocationItem } from '../types';
 
 interface ComparePageProps {
   currentLocation: LocationItem;
+  locations: LocationItem[];
 }
 
 const MONTH_LABELS = [
@@ -21,7 +21,10 @@ const MONTH_LABELS = [
   'Th 7', 'Th 8', 'Th 9', 'Th 10', 'Th 11', 'Th 12',
 ];
 
-export const ComparePage: React.FC<ComparePageProps> = ({ currentLocation }) => {
+export const ComparePage: React.FC<ComparePageProps> = ({
+  currentLocation,
+  locations,
+}) => {
   // Current month (1-12)
   const currentMonthNum = new Date().getMonth() + 1;
   const [selectedMonth, setSelectedMonth] = useState<number>(currentMonthNum);
@@ -34,8 +37,14 @@ export const ComparePage: React.FC<ComparePageProps> = ({ currentLocation }) => 
     currentLocation.name === 'Đà Lạt' ? 'Hồ Chí Minh' : 'Đà Lạt'
   );
 
-  const cityA = useMemo(() => findLocationByName(cityAName), [cityAName]);
-  const cityB = useMemo(() => findLocationByName(cityBName), [cityBName]);
+  const cityA = useMemo(
+    () => findLocationByName(locations, cityAName) ?? currentLocation,
+    [cityAName, currentLocation, locations],
+  );
+  const cityB = useMemo(
+    () => findLocationByName(locations, cityBName) ?? currentLocation,
+    [cityBName, currentLocation, locations],
+  );
 
   const compareData = useMemo(() => {
     return getCompareData(cityA, cityB, selectedMonth);
@@ -87,7 +96,7 @@ export const ComparePage: React.FC<ComparePageProps> = ({ currentLocation }) => 
             onChange={e => setCityAName(e.target.value)}
             className="border border-border rounded-[12px] bg-tint text-ink p-[10px_14px] text-[15px] font-medium outline-none cursor-pointer focus-ring"
           >
-            {LOCATIONS.map(loc => (
+            {locations.map(loc => (
               <option key={loc.slug} value={loc.name}>
                 {loc.name}
               </option>
@@ -102,7 +111,7 @@ export const ComparePage: React.FC<ComparePageProps> = ({ currentLocation }) => 
             onChange={e => setCityBName(e.target.value)}
             className="border border-border rounded-[12px] bg-tint text-ink p-[10px_14px] text-[15px] font-medium outline-none cursor-pointer focus-ring"
           >
-            {LOCATIONS.map(loc => (
+            {locations.map(loc => (
               <option key={loc.slug} value={loc.name}>
                 {loc.name}
               </option>

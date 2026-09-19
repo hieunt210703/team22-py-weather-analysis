@@ -8,10 +8,10 @@ from sqlalchemy.orm import Session
 from weather_analysis.config import build_localdb_url, get_database_url
 from weather_analysis.database import (
     Base,
-    create_schema,
     ensure_database_exists,
     get_engine,
     session_scope,
+    upgrade_database,
 )
 from weather_analysis.seed import seed_all
 
@@ -27,6 +27,7 @@ def test_database_url(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]
 
     ensure_database_exists()
     database_url = get_database_url()
+    upgrade_database()
     try:
         yield database_url
     finally:
@@ -57,9 +58,9 @@ def test_database_url(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]
 @pytest.fixture
 def session(test_database_url: str) -> Iterator[Session]:
     engine = get_engine()
-    Base.metadata.drop_all(engine)
-    create_schema()
     with session_scope() as setup_session:
+        for table in reversed(Base.metadata.sorted_tables):
+            setup_session.execute(table.delete())
         seed_all(setup_session)
 
     database_session = Session(engine)
