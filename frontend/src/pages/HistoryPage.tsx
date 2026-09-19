@@ -1,5 +1,7 @@
-import React, { useMemo } from 'react';
-import { getHistoryData } from '../api/weatherApi';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchClimateArchive, getArchiveRange, getHistoryData } from '../api/climateApi';
+import { ErrorMessage } from '../components/ErrorMessage';
 import { clamp } from '../lib/scoring';
 import type { LocationItem } from '../types';
 
@@ -8,28 +10,64 @@ interface HistoryPageProps {
 }
 
 export const HistoryPage: React.FC<HistoryPageProps> = ({ currentLocation }) => {
-  const history = useMemo(() => getHistoryData(currentLocation), [currentLocation]);
+  const range = getArchiveRange();
+  const { data: archive, isError, refetch } = useQuery({
+    queryKey: ['archive', currentLocation.slug, range.endDate],
+    queryFn: ({ signal }) => fetchClimateArchive(currentLocation, range, signal),
+    staleTime: 30 * 60 * 1000,
+    retry: 1,
+  });
+
+  if (!archive) {
+    if (isError) {
+      return (
+        <ErrorMessage
+          title="Không tải được dữ liệu lịch sử"
+          message={
+            <>
+              Không tải được dữ liệu lịch sử cho{' '}
+              <strong>{currentLocation.name}</strong>. Vui lòng kiểm tra kết
+              nối mạng và thử lại.
+            </>
+          }
+          onRetry={() => { void refetch(); }}
+        />
+      );
+    }
+    return (
+      <div className="grid grid-cols-1 min-[900px]:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-[16px] mt-[20px] animate-pulse" aria-label="Đang tải dữ liệu lịch sử">
+        <div className="h-[370px] rounded-[24px] bg-card shadow-sh2" />
+        <div className="space-y-[12px]">
+          {[0, 1, 2].map(index => <div key={index} className="h-[116px] rounded-[20px] bg-card shadow-sh2" />)}
+        </div>
+      </div>
+    );
+  }
+
+  const history = getHistoryData(currentLocation, archive);
 
   // Tìm maxRain của cả 2 series để tính tỉ lệ cột
-  const maxMm = useMemo(() => {
-    let max = 100;
-    history.monthly.forEach(m => {
-      if (m.recentRain > max) max = m.recentRain;
-      if (m.historicalAvg > max) max = m.historicalAvg;
-    });
-    return max;
-  }, [history]);
+  const maxMm = Math.max(100, ...history.monthly.flatMap(m => [m.recentRain, m.historicalAvg]));
 
-  const diffSign = history.percentDiff >= 0 ? `+${history.percentDiff}%` : `${history.percentDiff}%`;
+  const diffSign = history.percentDiff > 0 ? `+${history.percentDiff}%` : `${history.percentDiff}%`;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-[16px] mt-[20px]">
+    <div className="grid grid-cols-1 min-[900px]:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-[16px] mt-[20px]">
       {/* Cột trái: Thẻ biểu đồ lượng mưa */}
       <div className="bg-card rounded-[24px] p-[28px_30px] shadow-sh2 flex flex-col justify-between">
         <div>
+          {isError && (
+            <p className="text-[12px] text-m2 mb-[12px]">
+              Chưa cập nhật được dữ liệu lịch sử; đang hiển thị bản đã lưu.{' '}
+              <button type="button" onClick={() => { void refetch(); }} className="text-acc underline focus-ring">Thử lại</button>
+            </p>
+          )}
           <h2 className="font-nunito font-bold text-[20px] text-ink">
-            Lượng mưa 12 tháng qua · {currentLocation.name}
+            Lượng mưa 12 tháng trọn vẹn gần nhất · {currentLocation.name}
           </h2>
+          <p className="text-[12px] text-m3 mt-[4px]">
+            {history.period} · Trung bình 10 năm trước ({history.baselinePeriod}) · Dữ liệu tái phân tích <a href="https://open-meteo.com/en/docs/historical-weather-api" target="_blank" rel="noreferrer" className="underline hover:text-acc focus-ring">Open-Meteo ERA5</a>
+          </p>
 
           {/* 12 nhóm cột đôi */}
           <div className="overflow-x-auto pb-2 mt-[26px]">
@@ -42,7 +80,7 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({ currentLocation }) => 
 
                 return (
                   <div
-                    key={m.month}
+                    key={`${m.year}-${m.month}`}
                     className="flex-1 flex flex-col items-center justify-end h-full gap-[8px] group"
                   >
                     <div className="flex items-end gap-[3px] w-full justify-center h-[165px]">
@@ -50,13 +88,13 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({ currentLocation }) => 
                       <div
                         style={{ height: `${hHistorical}px` }}
                         className="w-[12px] bg-dim rounded-t-[5px] transition-all duration-200"
-                        title={`Trung bình ${m.monthLabel}: ${m.historicalAvg} mm`}
+                        title={`Trung bình 10 năm của ${m.monthLabel}: ${m.historicalAvg} mm`}
                       />
                       {/* Cột 12 tháng qua (acc) */}
                       <div
                         style={{ height: `${hRecent}px` }}
                         className="w-[12px] bg-acc rounded-t-[5px] transition-all duration-200"
-                        title={`12 tháng qua ${m.monthLabel}: ${m.recentRain} mm`}
+                        title={`${m.monthLabel}/${m.year}: ${m.recentRain} mm`}
                       />
                     </div>
 
@@ -74,11 +112,11 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({ currentLocation }) => 
         <div className="flex items-center gap-[20px] text-[12.5px] text-m1 mt-[18px] pt-[14px] border-t border-border">
           <div className="flex items-center gap-[7px]">
             <span className="w-[10px] h-[10px] rounded-[3px] bg-acc inline-block" />
-            <span>12 tháng qua</span>
+            <span>12 tháng gần nhất</span>
           </div>
           <div className="flex items-center gap-[7px]">
             <span className="w-[10px] h-[10px] rounded-[3px] bg-dim inline-block" />
-            <span>Trung bình nhiều năm</span>
+            <span>Trung bình 10 năm</span>
           </div>
         </div>
       </div>
@@ -91,7 +129,7 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({ currentLocation }) => 
             {diffSign}
           </span>
           <p className="text-[14px] text-ink2 leading-[1.55] mt-[6px] pretty-text">
-            Tổng lượng mưa 12 tháng qua so với trung bình nhiều năm tại {currentLocation.name}.
+            Tổng {history.totalRecent.toLocaleString('vi-VN')} mm, {history.rainComparison} so với mức trung bình {history.totalHistorical.toLocaleString('vi-VN')} mm của cùng 12 tháng trong 10 năm trước.
           </p>
         </div>
 
@@ -101,7 +139,7 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({ currentLocation }) => 
             {history.wettestMonth.label}
           </span>
           <p className="text-[14px] text-ink2 leading-[1.55] mt-[6px] pretty-text">
-            Tháng mưa nhiều nhất, khoảng {history.wettestMonth.rain} mm và {history.wettestMonth.days} ngày có mưa.
+            Tháng mưa nhiều nhất trong giai đoạn: {history.wettestMonth.rain} mm và {history.wettestMonth.days} ngày có mưa (từ 1 mm).
           </p>
         </div>
 
@@ -111,7 +149,7 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({ currentLocation }) => 
             {history.highestTempMonth.maxTemp}°C
           </span>
           <p className="text-[14px] text-ink2 leading-[1.55] mt-[6px] pretty-text">
-            Nhiệt độ trung bình tháng cao nhất trong năm; thấp nhất là {history.highestTempMonth.minTemp}°C.
+            Nhiệt độ trung bình tháng cao nhất vào {history.highestTempMonth.maxLabel}; thấp nhất là {history.highestTempMonth.minTemp}°C vào {history.highestTempMonth.minLabel}.
           </p>
         </div>
       </div>

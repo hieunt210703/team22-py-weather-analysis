@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import {
-  getCompareData,
-} from '../api/weatherApi';
+import { useQuery } from '@tanstack/react-query';
+import { fetchClimateArchive, getArchiveRange } from '../api/climateApi';
 import { findLocationByName } from '../api/locations';
+import { ErrorMessage } from '../components/ErrorMessage';
 import {
   getCompareSummary,
   getCompareConclusion,
@@ -26,7 +26,7 @@ export const ComparePage: React.FC<ComparePageProps> = ({
   locations,
 }) => {
   // Current month (1-12)
-  const currentMonthNum = new Date().getMonth() + 1;
+  const currentMonthNum = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Bangkok', month: 'numeric' }).format(new Date()));
   const [selectedMonth, setSelectedMonth] = useState<number>(currentMonthNum);
 
   // Compare cities
@@ -46,49 +46,22 @@ export const ComparePage: React.FC<ComparePageProps> = ({
     [cityBName, currentLocation, locations],
   );
 
-  const compareData = useMemo(() => {
-    return getCompareData(cityA, cityB, selectedMonth);
-  }, [cityA, cityB, selectedMonth]);
+  const range = getArchiveRange();
+  const archiveQueryA = useQuery({
+    queryKey: ['archive', cityA.slug, range.endDate],
+    queryFn: ({ signal }) => fetchClimateArchive(cityA, range, signal),
+    staleTime: 30 * 60 * 1000,
+    retry: 1,
+  });
+  const archiveQueryB = useQuery({
+    queryKey: ['archive', cityB.slug, range.endDate],
+    queryFn: ({ signal }) => fetchClimateArchive(cityB, range, signal),
+    staleTime: 30 * 60 * 1000,
+    retry: 1,
+  });
 
-  const { currentA, currentB, monthsA, monthsB } = compareData;
-
-  // Max calculations for bars
-  const maxTemp = 34;
-  const maxRain = Math.max(120, currentA.r, currentB.r);
-  const maxDays = 31;
-
-  // Text strings
-  const summaryA = getCompareSummary(
-    cityA.name,
-    selectedMonth,
-    currentA.t,
-    currentA.d,
-    currentA.r,
-    currentA.tourismScore
-  );
-  const summaryB = getCompareSummary(
-    cityB.name,
-    selectedMonth,
-    currentB.t,
-    currentB.d,
-    currentB.r,
-    currentB.tourismScore
-  );
-
-  const conclusion = getCompareConclusion(
-    selectedMonth,
-    { name: cityA.name, t: currentA.t, d: currentA.d, score: currentA.tourismScore },
-    { name: cityB.name, t: currentB.t, d: currentB.d, score: currentB.tourismScore }
-  );
-
-  const scoresA = monthsA.map(m => m.tourismScore);
-  const scoresB = monthsB.map(m => m.tourismScore);
-  const yearRecommendation = getYearRecommendation(cityA.name, scoresA, cityB.name, scoresB);
-
-  return (
-    <div className="space-y-[16px] mt-[20px]">
-      {/* Thanh điều khiển */}
-      <div className="bg-card p-[24px_28px] rounded-[24px] shadow-sh2 flex gap-[14px] items-center justify-between flex-wrap">
+  const controls = (
+    <div className="bg-card p-[24px_28px] rounded-[24px] shadow-sh2 flex gap-[14px] items-center justify-between flex-wrap">
         <div className="flex items-center gap-[12px] flex-wrap">
           {/* Select A */}
           <select
@@ -131,7 +104,7 @@ export const ComparePage: React.FC<ComparePageProps> = ({
                 onClick={() => setSelectedMonth(m)}
                 className={`p-[7px_10px] rounded-[9px] text-[12px] transition-all duration-120 cursor-pointer select-none focus-ring ${
                   isActive
-                    ? 'bg-acc text-accInk font-semibold shadow-xs'
+                    ? 'bg-acc text-acc-ink font-semibold shadow-xs'
                     : 'bg-tint text-m1 hover:text-ink'
                 }`}
               >
@@ -140,12 +113,77 @@ export const ComparePage: React.FC<ComparePageProps> = ({
             );
           })}
         </div>
+    </div>
+  );
+
+  const archiveA = archiveQueryA.data;
+  const archiveB = archiveQueryB.data;
+  if (!archiveA || !archiveB) {
+    const hasError = (!archiveA && archiveQueryA.isError) || (!archiveB && archiveQueryB.isError);
+    return (
+      <div className="space-y-[16px] mt-[20px]">
+        {controls}
+        {hasError ? (
+          <ErrorMessage
+            title="Không tải được dữ liệu khí hậu"
+            message={
+              <>
+                Không tải được dữ liệu khí hậu cho{' '}
+                <strong>{cityA.name} và {cityB.name}</strong>. Vui lòng kiểm tra
+                kết nối mạng và thử lại.
+              </>
+            }
+            onRetry={() => { void archiveQueryA.refetch(); void archiveQueryB.refetch(); }}
+          />
+        ) : (
+          <div className="space-y-[16px] animate-pulse" aria-label="Đang tải dữ liệu khí hậu">
+            <div className="grid grid-cols-1 min-[900px]:grid-cols-2 gap-[16px]">
+              <div className="h-[172px] rounded-[24px] bg-acc/60" />
+              <div className="h-[172px] rounded-[24px] bg-card shadow-sh2" />
+            </div>
+            <div className="h-[300px] rounded-[24px] bg-card shadow-sh2" />
+            <div className="h-[220px] rounded-[24px] bg-card shadow-sh2" />
+          </div>
+        )}
       </div>
+    );
+  }
+
+  const monthsA = archiveA.months;
+  const monthsB = archiveB.months;
+  const currentA = monthsA[selectedMonth - 1];
+  const currentB = monthsB[selectedMonth - 1];
+  const maxTemp = 34;
+  const maxRain = Math.max(120, currentA.r, currentB.r);
+  const maxDays = 31;
+  const summaryA = getCompareSummary(cityA.name, selectedMonth, currentA.t, currentA.d, currentA.r, currentA.tourismScore);
+  const summaryB = getCompareSummary(cityB.name, selectedMonth, currentB.t, currentB.d, currentB.r, currentB.tourismScore);
+  const conclusion = getCompareConclusion(
+    selectedMonth,
+    { name: cityA.name, t: currentA.t, d: currentA.d, score: currentA.tourismScore },
+    { name: cityB.name, t: currentB.t, d: currentB.d, score: currentB.tourismScore }
+  );
+  const scoresA = monthsA.map(m => m.tourismScore);
+  const scoresB = monthsB.map(m => m.tourismScore);
+  const yearRecommendation = getYearRecommendation(cityA.name, scoresA, cityB.name, scoresB);
+
+  return (
+    <div className="space-y-[16px] mt-[20px]">
+      {controls}
+      {(archiveQueryA.isError || archiveQueryB.isError) && (
+        <p className="text-[12px] text-m2 px-[4px]">
+          Chưa cập nhật được dữ liệu khí hậu; đang hiển thị bản đã lưu.{' '}
+          <button type="button" onClick={() => { void archiveQueryA.refetch(); void archiveQueryB.refetch(); }} className="text-acc underline focus-ring">Thử lại</button>
+        </p>
+      )}
+      <p className="text-[12px] text-m3 px-[4px]">
+        Trung bình 10 năm trước {archiveA.recentPeriod} · Nguồn: <a href="https://open-meteo.com/en/docs/historical-weather-api" target="_blank" rel="noreferrer" className="underline hover:text-acc focus-ring">Open-Meteo ERA5</a>
+      </p>
 
       {/* Hai thẻ điểm */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[16px]">
+      <div className="grid grid-cols-1 min-[900px]:grid-cols-2 gap-[16px]">
         {/* Thẻ A (nền acc, chữ accInk) */}
-        <div className="bg-acc text-accInk rounded-[24px] p-[26px_28px] shadow-sh2 flex flex-col justify-between">
+        <div className="bg-acc text-acc-ink rounded-[24px] p-[26px_28px] shadow-sh2 flex flex-col justify-between">
           <div>
             <span className="text-[15px] font-medium opacity-90">{cityA.name}</span>
             <div className="flex items-baseline gap-[12px] mt-[6px]">

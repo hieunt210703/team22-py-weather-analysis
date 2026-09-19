@@ -25,7 +25,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({ title, message, onRe
       <button
         type="button"
         onClick={onRetry}
-        className="inline-flex items-center gap-[8px] bg-acc text-accInk px-[20px] py-[10px] rounded-full font-medium text-[13.5px] shadow-sh1 hover:opacity-95 transition-opacity cursor-pointer focus-ring"
+        className="inline-flex items-center gap-[8px] bg-acc text-acc-ink px-[20px] py-[10px] rounded-full font-medium text-[13.5px] shadow-sh1 hover:opacity-95 transition-opacity cursor-pointer focus-ring"
       >
         <RotateCw className="w-[14px] h-[14px]" />
         Thử lại

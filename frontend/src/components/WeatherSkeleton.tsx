@@ -4,7 +4,7 @@ export const WeatherSkeleton: React.FC = () => {
   return (
     <div className="space-y-[16px] mt-[20px] animate-pulse">
       {/* Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-[16px]">
+      <div className="grid grid-cols-1 min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-[16px]">
         {/* Left card */}
         <div className="bg-card rounded-[24px] p-[30px_32px_32px] shadow-sh2 h-[380px] flex flex-col justify-between">
           <div className="space-y-[12px]">
@@ -47,7 +47,7 @@ export const WeatherSkeleton: React.FC = () => {
       </div>
 
       {/* Row 2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-[16px]">
+      <div className="grid grid-cols-1 min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-[16px]">
         <div className="bg-card rounded-[24px] p-[26px_28px] shadow-sh2 h-[220px]" />
         <div className="bg-card rounded-[24px] p-[26px_28px] shadow-sh2 h-[220px]" />
       </div>

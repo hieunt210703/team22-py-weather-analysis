@@ -12,7 +12,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ data }) => {
   return (
     <div className="space-y-[16px] mt-[20px]">
       {/* Row 1: Current Weather & Verdict + Hourly Scores */}
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-[16px]">
+      <div className="grid grid-cols-1 min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-[16px]">
         {/* Left: Thẻ hiện tại */}
         <div className="bg-card rounded-[24px] p-[30px_32px_32px] shadow-sh2 flex flex-col justify-between">
           <div>
@@ -131,41 +131,43 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ data }) => {
               </div>
 
               {/* 24 cột biểu đồ */}
-              <div className="pb-1 mt-[20px]">
-                <div className="flex items-end gap-[4px] h-[120px]">
-                  {data.hourly.map((h) => {
-                    const barHeight = 10 + h.score * 1.05;
-                    const barColor = getScoreColor(h.hour, h.score);
-                    return (
-                      <div
-                        key={h.hour}
-                        className="flex-1 flex flex-col items-center justify-end h-full group relative"
-                      >
-                        {/* Tooltip on hover */}
-                        <div className="absolute -top-7 hidden group-hover:flex bg-ink text-card text-[11px] py-0.5 px-1.5 rounded whitespace-nowrap z-20 pointer-events-none">
-                          {String(h.hour).padStart(2, "0")}:00 · {h.score}đ ·{" "}
-                          {h.temp}°C
-                        </div>
+              <div className="overflow-x-auto pb-1 mt-[20px]">
+                <div className="min-w-[560px] min-[900px]:min-w-0">
+                  <div className="flex items-end gap-[4px] h-[120px]">
+                    {data.hourly.map((h) => {
+                      const barHeight = 10 + h.score * 1.05;
+                      const barColor = getScoreColor(h.hour, h.score);
+                      return (
                         <div
-                          style={{
-                            height: `${barHeight}px`,
-                            backgroundColor: barColor,
-                          }}
-                          className="w-full rounded-[5px] transition-all duration-200"
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+                          key={h.hour}
+                          className="flex-1 flex flex-col items-center justify-end h-full group relative"
+                        >
+                          {/* Tooltip on hover */}
+                          <div className="absolute -top-7 hidden group-hover:flex bg-ink text-card text-[11px] py-0.5 px-1.5 rounded whitespace-nowrap z-20 pointer-events-none">
+                            {String(h.hour).padStart(2, "0")}:00 · {h.score}đ ·{" "}
+                            {h.temp}°C
+                          </div>
+                          <div
+                            style={{
+                              height: `${barHeight}px`,
+                              backgroundColor: barColor,
+                            }}
+                            className="w-full rounded-[5px] transition-all duration-200"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
 
-              {/* Trục giờ */}
-              <div className="flex justify-between text-[11px] text-m3 mt-[9px] min-w-[500px]">
-                <span>00:00</span>
-                <span>06:00</span>
-                <span>12:00</span>
-                <span>18:00</span>
-                <span>23:00</span>
+                  {/* Trục giờ */}
+                  <div className="flex justify-between text-[11px] text-m3 mt-[9px]">
+                    <span>00:00</span>
+                    <span>06:00</span>
+                    <span>12:00</span>
+                    <span>18:00</span>
+                    <span>23:00</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -193,7 +195,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ data }) => {
       </div>
 
       {/* Row 2: Điểm đến từ đâu & Chi tiết trong ngày */}
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-[16px] mt-[16px]">
+      <div className="grid grid-cols-1 min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-[16px] mt-[16px]">
         {/* Điểm N đến từ đâu */}
         <div className="bg-card rounded-[24px] p-[26px_28px] shadow-sh2">
           <div className="flex items-baseline justify-between">
@@ -322,12 +324,12 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ data }) => {
         </div>
 
         {showWeekForecast && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-[12px]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 min-[900px]:grid-cols-7 gap-[12px]">
             {data.daily7.map((day, idx) => (
               <div
                 key={day.date}
                 className={`bg-card rounded-[18px] p-[18px_14px_16px] shadow-sh2 text-center flex flex-col justify-between ${
-                  idx === 0 ? "border border-accSoft" : ""
+                  idx === 0 ? "border border-acc-soft" : ""
                 }`}
               >
                 <span className="text-[12.5px] text-m1 block font-medium">
