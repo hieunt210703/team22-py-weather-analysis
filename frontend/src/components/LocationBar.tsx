@@ -181,7 +181,11 @@ export const LocationBar: React.FC<LocationBarProps> = ({
 
         {/* Dropdown Results */}
         {isOpen && (
-          <div className="absolute top-[46px] left-0 w-[330px] max-w-[calc(100vw-44px)] max-h-[330px] overflow-y-auto bg-card border border-border rounded-[18px] shadow-sh3 p-[8px] z-50">
+          <div
+            role="listbox"
+            aria-label="Kết quả tìm địa điểm"
+            className="absolute top-[46px] left-0 w-[330px] max-w-[calc(100vw-44px)] max-h-[330px] overflow-y-auto bg-card border border-border rounded-[18px] shadow-sh3 p-[8px] z-50"
+          >
             {isFetching && filteredLocations.length === 0 ? (
               <div className="py-[16px] px-[14px] text-[13px] text-m2 text-center">
                 Đang tìm địa điểm…
@@ -200,6 +204,8 @@ export const LocationBar: React.FC<LocationBarProps> = ({
                 return (
                   <div
                     key={loc.slug}
+                    role="option"
+                    aria-selected={isCurrent}
                     className={`flex items-center rounded-[10px] transition-colors ${
                       isCurrent
                         ? "bg-acc-soft text-acc font-semibold"
