@@ -19,12 +19,34 @@ import {
   findLocationBySlug,
   findNearestLocation,
 } from './api/locations';
-import { fetchWeatherData } from './api/weatherApi';
+import { getForecast } from './api/forecast';
 import { useLocations } from './hooks/useLocations';
 import type { LocationItem } from './types';
 
 const FAVORITES_STORAGE_KEY = 'nang_mua_favorites';
 const EMPTY_LOCATIONS: LocationItem[] = [];
+
+function formatUpdatedAt(updatedAt: string | undefined): string {
+  if (!updatedAt) return 'Đang cập nhật...';
+
+  const date = new Date(updatedAt);
+  if (Number.isNaN(date.getTime())) return 'Đang cập nhật...';
+
+  const formatter = new Intl.DateTimeFormat('vi-VN', {
+    timeZone: 'Asia/Ho_Chi_Minh',
+    weekday: 'long',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  });
+  const parts = Object.fromEntries(
+    formatter.formatToParts(date).map(part => [part.type, part.value]),
+  );
+  return `${parts.weekday} · ${parts.day}/${parts.month}/${parts.year} · ${parts.hour}:${parts.minute}`;
+}
 
 export const NangMuaApp: React.FC = () => {
   const { locationSlug, page } = useParams<{ locationSlug?: string; page?: string }>();
@@ -104,7 +126,7 @@ export const NangMuaApp: React.FC = () => {
   } = useQuery({
     queryKey: ['weather', currentLocation?.slug],
     queryFn: currentLocation
-      ? () => fetchWeatherData(currentLocation)
+      ? () => getForecast(currentLocation.slug)
       : skipToken,
     staleTime: 30 * 60 * 1000,
     retry: 1,
@@ -151,7 +173,7 @@ export const NangMuaApp: React.FC = () => {
         <Header
           currentPage={currentPage}
           onSelectPage={handleSelectPage}
-          updatedAt={weatherData?.updatedAt || 'Đang cập nhật...'}
+          updatedAt={formatUpdatedAt(weatherData?.updatedAt)}
           isFetching={isFetching}
           onRefresh={() => refetch()}
         />

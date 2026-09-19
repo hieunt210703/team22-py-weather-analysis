@@ -57,3 +57,12 @@ def test_list_pinned_uses_pin_order(session: Session) -> None:
         "ho-chi-minh",
         "ha-noi",
     ]
+
+
+def test_find_by_slug_returns_matching_location(session: Session) -> None:
+    repository = LocationRepository(session)
+    location = repository.find_by_slug("ha-noi")
+
+    assert location is not None
+    assert location.name == "Hà Nội"
+    assert repository.find_by_slug("khong-ton-tai") is None

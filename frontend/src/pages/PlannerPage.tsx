@@ -1,9 +1,9 @@
 import React from 'react';
-import type { ProcessedWeatherData } from '../api/weatherApi';
+import type { LocationForecast } from '../api/forecast';
 import { getScoreColor } from '../lib/scoring';
 
 interface PlannerPageProps {
-  data: ProcessedWeatherData;
+  data: LocationForecast;
 }
 
 export const PlannerPage: React.FC<PlannerPageProps> = ({ data }) => {
@@ -16,7 +16,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({ data }) => {
             Hôm nay nên ra ngoài lúc nào?
           </h2>
           <p className="text-[14px] text-m1 leading-[1.6] max-w-[420px] mt-[6px]">
-            Thanh càng cao thì giờ đó càng dễ chịu. Nhiệt độ, mưa, gió và UV được chấm chung một thang 0 – 100.
+            Thanh càng cao thì giờ đó càng dễ chịu. Nhiệt độ, mưa và UV được chấm chung một thang 0 – 100.
           </p>
 
           {/* 24 Cột lớn 170px */}

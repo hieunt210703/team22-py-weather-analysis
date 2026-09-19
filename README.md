@@ -57,6 +57,9 @@ cd backend
 uvicorn weather_analysis.api.app:app --reload
 ```
 
+Backend cần kết nối Internet để lấy dữ liệu dự báo và chất lượng không khí từ
+Open-Meteo. Dữ liệu dự báo được cache trong bộ nhớ trong 30 phút.
+
 Khởi động frontend tại `http://localhost:5173` trong một terminal khác:
 
 ```powershell
@@ -118,6 +121,7 @@ Không cần bật sẵn ứng dụng: test tự khởi động backend và fron
 ## Cấu trúc chính
 
 - `backend/weather_analysis/api/`: các route FastAPI và schema trao đổi dữ liệu.
+- `backend/weather_analysis/clients/`: các client gọi dịch vụ dữ liệu bên thứ ba.
 - `backend/weather_analysis/services/`: nghiệp vụ xác thực, tra cứu và nhập địa điểm.
 - `backend/weather_analysis/repositories/`: truy cập dữ liệu qua SQLAlchemy ORM.
 - `backend/migrations/`: lịch sử thay đổi schema database bằng Alembic.

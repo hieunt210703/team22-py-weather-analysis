@@ -1,5 +1,7 @@
 from typing import Self
 
+from datetime import date, datetime
+
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
@@ -16,7 +18,11 @@ class UserResponse(BaseModel):
 
 
 class LocationResponse(BaseModel):
-    model_config = ConfigDict(alias_generator=to_camel, validate_by_name=True)
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        validate_by_name=True,
+        from_attributes=True,
+    )
 
     name: str
     slug: str
@@ -43,3 +49,88 @@ class LocationImportResponse(BaseModel):
     model_config = ConfigDict(alias_generator=to_camel, validate_by_name=True)
 
     imported_count: int
+
+
+class CamelResponse(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        validate_by_name=True,
+        from_attributes=True,
+    )
+
+
+class BestWindowResponse(CamelResponse):
+    range: str
+    score: int
+    start: int
+    len: int
+    tag: str
+    note: str
+
+
+class HourForecastResponse(CamelResponse):
+    hour: int
+    temp: float
+    rain_prob: int
+    uv: float
+    humidity: int
+    wind: int
+    score: int
+
+
+class FactorResponse(CamelResponse):
+    label: str
+    value: int
+    note: str
+
+
+class WeatherDetailsResponse(CamelResponse):
+    sunrise: str
+    sunset: str
+    sunshine_hours: float
+    aqi: int | None
+    aqi_label: str | None
+    rain_sum: float
+    rain_window: str
+    dew_point: int
+
+
+class DayForecastResponse(CamelResponse):
+    date: date
+    day_label: str
+    temp_max: int
+    temp_min: int
+    rain_prob: int
+    rain_sum: float
+
+
+class ActivityWindowResponse(CamelResponse):
+    id: str
+    name: str
+    score: int
+    range: str
+    note: str
+    has_window: bool
+
+
+class LocationForecastResponse(CamelResponse):
+    location: LocationResponse
+    updated_at: datetime
+    temp_now: int
+    apparent_temp_now: int
+    temp_max: int
+    temp_min: int
+    condition_desc: str
+    humidity_now: int
+    wind_now: int
+    rain_prob_now: int
+    uv_now: float
+    day_score: int
+    verdict: str
+    why: str
+    best_windows: list[BestWindowResponse]
+    hourly: list[HourForecastResponse]
+    factors: list[FactorResponse]
+    details: WeatherDetailsResponse
+    daily7: list[DayForecastResponse]
+    activities: list[ActivityWindowResponse]

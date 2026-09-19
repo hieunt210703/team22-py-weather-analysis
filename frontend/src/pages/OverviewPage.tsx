@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import type { ProcessedWeatherData } from "../api/weatherApi";
+import type { LocationForecast } from "../api/forecast";
 import { getScoreColor, getFactorColor } from "../lib/scoring";
 
 interface OverviewPageProps {
-  data: ProcessedWeatherData;
+  data: LocationForecast;
 }
 
 export const OverviewPage: React.FC<OverviewPageProps> = ({ data }) => {
@@ -198,11 +198,11 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ data }) => {
         <div className="bg-card rounded-[24px] p-[26px_28px] shadow-sh2">
           <div className="flex items-baseline justify-between">
             <h4 className="font-nunito font-semibold text-[15px] text-ink">
-              Điểm {data.dayScore} đến từ đâu
+              Các yếu tố thời tiết lúc này
             </h4>
           </div>
           <p className="text-[12.5px] text-m2 mt-[2px]">
-            Bốn yếu tố được chấm riêng rồi cộng lại
+            Tham khảo thêm bên cạnh điểm trung bình từ 06:00 đến 17:59
           </p>
 
           <div className="space-y-[14px] mt-[20px]">
@@ -270,10 +270,10 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ data }) => {
                 </span>
                 <div className="flex items-baseline gap-[6px] mt-[2px]">
                   <span className="font-nunito font-semibold text-[20px] text-ink">
-                    {data.details.aqi}
+                    {data.details.aqi ?? "—"}
                   </span>
                   <span className="text-[12.5px] text-m2">
-                    {data.details.aqiLabel}
+                    {data.details.aqiLabel ?? "Không có dữ liệu"}
                   </span>
                 </div>
               </div>

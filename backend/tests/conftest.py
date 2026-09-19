@@ -1,11 +1,16 @@
 from collections.abc import Iterator
+import json
+from pathlib import Path
+from typing import Any, cast
 from uuid import uuid4
 
+import httpx
 import pytest
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
 from weather_analysis.config import build_localdb_url, get_database_url
+from weather_analysis.clients.open_meteo_client import OpenMeteoClient, OpenMeteoForecast
 from weather_analysis.database import (
     Base,
     ensure_database_exists,
@@ -14,6 +19,24 @@ from weather_analysis.database import (
     upgrade_database,
 )
 from weather_analysis.seed import seed_all
+
+
+@pytest.fixture
+def open_meteo_payload() -> dict[str, Any]:
+    fixture_path = Path(__file__).parent / "fixtures" / "open_meteo_forecast.json"
+    return cast(dict[str, Any], json.loads(fixture_path.read_text(encoding="utf-8")))
+
+
+@pytest.fixture
+def raw_forecast(open_meteo_payload: dict[str, Any]) -> OpenMeteoForecast:
+    def handler(request: httpx.Request) -> httpx.Response:
+        payload_key = (
+            "air_quality" if "air-quality" in request.url.host else "forecast"
+        )
+        return httpx.Response(200, json=open_meteo_payload[payload_key])
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as http_client:
+        return OpenMeteoClient(http_client).fetch_forecast(21.0285, 105.8542)
 
 
 @pytest.fixture(scope="session")

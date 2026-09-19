@@ -6,6 +6,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from weather_analysis.api.admin_location_routes import router as admin_location_router
 from weather_analysis.api.auth_routes import router as auth_router
+from weather_analysis.api.forecast_routes import router as forecast_router
 from weather_analysis.api.location_routes import router as location_router
 from weather_analysis.config import get_session_secret
 from weather_analysis.database import (
@@ -29,4 +30,5 @@ app = FastAPI(title="Phân tích thời tiết", lifespan=lifespan)
 app.add_middleware(SessionMiddleware, secret_key=get_session_secret())
 app.include_router(auth_router)
 app.include_router(location_router)
+app.include_router(forecast_router)
 app.include_router(admin_location_router)

@@ -19,6 +19,11 @@ class LocationRepository:
         )
         return list(self._session.scalars(statement))
 
+    def find_by_slug(self, slug: str) -> Location | None:
+        return self._session.scalar(
+            select(Location).where(Location.slug == slug)
+        )
+
     def count(self) -> int:
         return self._session.scalar(select(func.count()).select_from(Location)) or 0
 
