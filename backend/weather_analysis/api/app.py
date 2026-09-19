@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 
 from weather_analysis.api.admin_location_routes import router as admin_location_router
+from weather_analysis.api.admin_settings_routes import router as admin_settings_router
 from weather_analysis.api.auth_routes import router as auth_router
 from weather_analysis.api.forecast_routes import router as forecast_router
 from weather_analysis.api.location_routes import router as location_router
@@ -32,3 +33,4 @@ app.include_router(auth_router)
 app.include_router(location_router)
 app.include_router(forecast_router)
 app.include_router(admin_location_router)
+app.include_router(admin_settings_router)

@@ -7,6 +7,7 @@ import { logout } from '../api/auth'
 import { ApiError } from '../api/client'
 import { BrandLogo } from '../components/BrandLogo'
 import { LocationImportForm } from '../components/LocationImportForm'
+import { SystemSettingsSection } from '../components/SystemSettingsSection'
 import {
   CURRENT_USER_QUERY_KEY,
   useCurrentUser,
@@ -94,6 +95,7 @@ export function AdminPage(): JSX.Element {
             Quản lý dữ liệu được dùng trên trang phân tích thời tiết.
           </p>
           <LocationImportForm />
+          <SystemSettingsSection />
         </main>
       </div>
     </div>

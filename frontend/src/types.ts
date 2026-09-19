@@ -16,6 +16,19 @@ export interface LocationImportResult {
   importedCount: number
 }
 
+export interface SystemSetting {
+  key: string
+  category: string
+  title: string
+  description: string
+  type: 'integer'
+  value: number
+  defaultValue: number
+  minimum: number
+  maximum: number
+  isModified: boolean
+}
+
 export interface CityTemperatures {
   name: string
   temperatures: number[]

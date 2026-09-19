@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
 from weather_analysis.models import Location
+from weather_analysis.services.system_settings_service import SettingState
 
 
 class LoginRequest(BaseModel):
@@ -49,6 +50,41 @@ class LocationImportResponse(BaseModel):
     model_config = ConfigDict(alias_generator=to_camel, validate_by_name=True)
 
     imported_count: int
+
+
+class SystemSettingUpdateRequest(BaseModel):
+    value: object
+
+
+class SystemSettingResponse(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, validate_by_name=True)
+
+    key: str
+    category: str
+    title: str
+    description: str
+    type: str
+    value: int
+    default_value: int
+    minimum: int
+    maximum: int
+    is_modified: bool
+
+    @classmethod
+    def from_state(cls, state: SettingState) -> Self:
+        definition = state.definition
+        return cls(
+            key=definition.key,
+            category=definition.category,
+            title=definition.title,
+            description=definition.description,
+            type=definition.type,
+            value=state.value,
+            default_value=definition.default,
+            minimum=definition.minimum,
+            maximum=definition.maximum,
+            is_modified=state.is_modified,
+        )
 
 
 class CamelResponse(BaseModel):

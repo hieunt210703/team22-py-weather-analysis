@@ -15,6 +15,10 @@ from weather_analysis.services.forecast_service import (
     build_forecast,
     get_location_forecast,
 )
+from weather_analysis.services.system_settings_service import (
+    FORECAST_CACHE_DURATION,
+    update_setting,
+)
 
 
 class FakeForecastClient:
@@ -107,6 +111,24 @@ def test_locations_with_same_coordinates_share_cache(
     assert client.calls == 1
     assert nghe_an.location.slug == "nghe-an"
     assert vinh.location.slug == "vinh"
+
+
+def test_forecast_uses_configured_cache_duration(
+    session: Session,
+    raw_forecast: OpenMeteoForecast,
+) -> None:
+    now = 100.0
+    client = FakeForecastClient(raw_forecast)
+    cache: MemoryCache[ForecastCacheKey, OpenMeteoForecast] = MemoryCache(
+        lambda: now
+    )
+    update_setting(session, FORECAST_CACHE_DURATION.key, 5)
+
+    get_location_forecast(session, "ha-noi", client, cache, fixed_now)
+    now += 6 * 60
+    get_location_forecast(session, "ha-noi", client, cache, fixed_now)
+
+    assert client.calls == 2
 
 
 def test_unknown_slug_raises_location_not_found(

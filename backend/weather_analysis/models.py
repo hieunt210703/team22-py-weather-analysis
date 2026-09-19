@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import Index, String, Unicode, func, text
+from sqlalchemy import Index, String, Unicode, UnicodeText, func, text
+from sqlalchemy.dialects.mssql import DATETIME2
 from sqlalchemy.orm import Mapped, mapped_column
 
 from weather_analysis.database import Base
@@ -41,3 +42,15 @@ class Location(Base):
     latitude: Mapped[float]
     longitude: Mapped[float]
     pin_order: Mapped[int | None]
+
+
+class SystemSetting(Base):
+    """Giá trị cài đặt hệ thống đã được quản trị viên thay đổi."""
+
+    __tablename__ = "system_settings"
+
+    key: Mapped[str] = mapped_column(String(100), primary_key=True)
+    value: Mapped[str] = mapped_column(UnicodeText)
+    updated_at: Mapped[datetime] = mapped_column(
+        DATETIME2, server_default=func.sysutcdatetime()
+    )

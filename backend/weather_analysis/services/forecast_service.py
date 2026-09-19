@@ -29,9 +29,12 @@ from weather_analysis.services.scoring import (
     get_weather_condition,
     js_round,
 )
+from weather_analysis.services.system_settings_service import (
+    FORECAST_CACHE_DURATION,
+    get_setting_value,
+)
 
 
-FORECAST_CACHE_TTL = timedelta(minutes=30)
 VIETNAMESE_DAYS = (
     "Thứ Hai",
     "Thứ Ba",
@@ -128,10 +131,11 @@ def get_location_forecast(
         now_factory() if now_factory is not None else datetime.now(VIETNAM_TIMEZONE)
     )
     cache_key = (location.latitude, location.longitude, now.date())
+    cache_duration = get_setting_value(session, FORECAST_CACHE_DURATION)
     raw = cache.get_or_create(
         cache_key,
         lambda: client.fetch_forecast(location.latitude, location.longitude),
-        FORECAST_CACHE_TTL,
+        timedelta(minutes=cache_duration),
     )
     return build_forecast(location, raw, now)
 

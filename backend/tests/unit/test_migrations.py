@@ -11,6 +11,7 @@ def test_migrations_can_downgrade_and_upgrade(test_database_url: str) -> None:
 
     assert "users" not in inspect(get_engine()).get_table_names()
     assert "locations" not in inspect(get_engine()).get_table_names()
+    assert "system_settings" not in inspect(get_engine()).get_table_names()
 
     command.upgrade(config, "head")
     inspector = inspect(get_engine())
@@ -32,3 +33,7 @@ def test_migrations_can_downgrade_and_upgrade(test_database_url: str) -> None:
         "longitude",
         "pin_order",
     }
+    assert {
+        column["name"]
+        for column in inspector.get_columns("system_settings")
+    } == {"key", "value", "updated_at"}
