@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [tailwindcss(), react()],
   server: {
     proxy: {
-      '/api': 'http://localhost:8000',
+      '/api': process.env.WEATHER_API_URL ?? 'http://localhost:8000',
     },
   },
 })

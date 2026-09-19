@@ -41,6 +41,17 @@
       "problemMatcher": []
     },
     {
+      "label": "Chạy test e2e",
+      "type": "shell",
+      "command": "${workspaceFolder}\\backend\\.venv\\Scripts\\python.exe",
+      "args": ["-m", "pytest", "tests/e2e"],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
       "label": "Chạy test frontend",
       "type": "shell",
       "command": "npm",

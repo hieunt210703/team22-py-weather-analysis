@@ -19,6 +19,7 @@ cd backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements-dev.txt
+python -m playwright install chromium
 python -m weather_analysis.seed
 ```
 
@@ -96,6 +97,24 @@ npm run build
 npm test
 ```
 
+Kiểm thử giao diện:
+
+```powershell
+cd backend
+.\.venv\Scripts\Activate.ps1
+pytest tests/e2e
+```
+
+Muốn quan sát trực tiếp các thao tác trong trình duyệt:
+
+```powershell
+pytest tests/e2e --headed --slowmo 500
+```
+
+Cần chạy `npm install` trong thư mục `frontend` trước khi kiểm thử giao diện.
+Không cần bật sẵn ứng dụng: test tự khởi động backend và frontend trên các port
+8001 và 5174, sử dụng database kiểm thử riêng rồi dọn dẹp khi kết thúc.
+
 ## Cấu trúc chính
 
 - `backend/weather_analysis/api/`: các route FastAPI và schema trao đổi dữ liệu.
@@ -103,7 +122,7 @@ npm test
 - `backend/weather_analysis/repositories/`: truy cập dữ liệu qua SQLAlchemy ORM.
 - `backend/migrations/`: lịch sử thay đổi schema database bằng Alembic.
 - `backend/data/seed/`: dữ liệu mẫu cho tài khoản và địa điểm.
-- `backend/tests/`: unit test và API test.
+- `backend/tests/`: unit test, API test và e2e test.
 - `frontend/src/api/`: mã gọi API từ trình duyệt.
 - `frontend/src/pages/`: các màn hình của ứng dụng.
 - `frontend/src/components/`: các thành phần giao diện dùng lại được.
@@ -114,6 +133,7 @@ npm test
 - `WEATHER_DB_NAME`: tên database LocalDB. Mặc định là `WeatherAnalysis`.
 - `WEATHER_DB_DIR`: thư mục chứa tệp `.mdf` và `.ldf`. Mặc định là `backend/data`.
 - `WEATHER_SESSION_SECRET`: khóa dùng để ký session cookie. Phải đặt thành một giá trị bí mật khi triển khai thật.
+- `WEATHER_API_URL`: URL backend mà Vite chuyển tiếp các request `/api` tới. Mặc định là `http://localhost:8000`.
 
 Khi dùng SQL Server thật, đặt `WEATHER_DB_URL` theo dạng
 `mssql+pyodbc://user:password@server/WeatherAnalysis?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes`.
