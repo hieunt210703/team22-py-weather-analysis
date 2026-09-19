@@ -81,6 +81,9 @@ phải dùng mã hóa UTF-8 và có các cột:
 
 ## Chạy kiểm tra
 
+Có thể chạy cả test backend và frontend trong Testing panel của VS Code. Test
+e2e cần cài Playwright như hướng dẫn trên và chạy chậm hơn vì tự khởi động server.
+
 Kiểm tra backend:
 
 ```powershell
